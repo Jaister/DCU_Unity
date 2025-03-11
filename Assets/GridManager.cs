@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour
 {
@@ -6,7 +7,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int height = 10;
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private GameObject PlayerPrefab;
-
+    //Tile dict
+    private Dictionary<Vector2, Tile> tileDict = new Dictionary<Vector2, Tile>();
     private Transform firstTile;
 
     void Start()
@@ -58,8 +60,12 @@ public class GridManager : MonoBehaviour
             {
                 firstTile = tile.transform;
             }
+            //Add to the dict
+            tileDict.Add(new Vector2(x, y), tile);
         }
     }
+    NumberFiller();
+
 }
 
 
@@ -79,6 +85,23 @@ public class GridManager : MonoBehaviour
 
             // Now activate the player
             PlayerPrefab.SetActive(true);
+        }
+    }
+
+    void NumberFiller(){
+        //If random in range is 0, then fill the tile with a number
+        //If random in range is 1, then deactivate number
+        foreach (Tile tile in tileDict.Values)
+        {
+            int random = Random.Range(0, 2);
+            if (random == 0)
+            {
+                tile.changeValue(Random.Range(0, 10));
+            }
+            else
+            {
+                tile.changeValue(-1);
+            }
         }
     }
 }
