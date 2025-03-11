@@ -7,54 +7,78 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private GameObject PlayerPrefab;
 
+    private Transform firstTile;
+
     void Start()
     {
+        // Deactivate player initially
+        PlayerPrefab.SetActive(false);
         GenerateGrid();
+
+        // Position player after the grid is centered
+        PositionPlayer();
     }
 
     void GenerateGrid()
+{
+    // Get tile size from SpriteRenderer
+    Vector2 tileSize = _tilePrefab.GetComponent<SpriteRenderer>().bounds.size;
+
+    // Adjust tile size if necessary (your hack was multiplying by 1.5f)
+    tileSize *= 1.5f; 
+
+    // Calculate total grid size
+    float gridWidth = width * tileSize.x;
+    float gridHeight = height * tileSize.y;
+
+    // Set the grid's origin based on its center
+    Vector3 gridOrigin = transform.position - new Vector3(gridWidth / 2, gridHeight / 2, 0) + new Vector3(tileSize.x / 2, tileSize.y / 2, 0);
+
+    for (int x = 0; x < width; x++)
     {
-        // Get tile size from SpriteRenderer instead of Renderer
-        Vector2 tileSize = _tilePrefab.GetComponent<SpriteRenderer>().bounds.size;
-
-        float totalWidth = width * tileSize.x;
-        float totalHeight = height * tileSize.y;
-
-        Vector2 offset = new Vector2(
-            -totalWidth / 2 + (tileSize.x / 2),
-            -totalHeight / 2 + (tileSize.y / 2)
-        );
-
-        Vector3 parentPosition = transform.position;
-
-        for (int x = 0; x < width; x++)
+        for (int y = 0; y < height; y++)
         {
-            for (int y = 0; y < height; y++)
+            // Calculate the position for each tile
+            Vector3 tilePosition = new Vector3(
+                gridOrigin.x + x * tileSize.x,
+                gridOrigin.y + y * tileSize.y,
+                0
+            );
+
+            // Instantiate the tile
+            var tile = Instantiate(_tilePrefab, tilePosition, Quaternion.identity, this.transform);
+            tile.name = $"Tile {x} {y}";
+
+            // Determine if the tile should have an offset pattern
+            bool isOffset = (x + y) % 2 == 0;
+            tile.Init(isOffset);
+
+            // Store reference to the first tile
+            if (x == 0 && y == 0)
             {
-                var pos = new Vector3(
-                    parentPosition.x + offset.x + (x * tileSize.x),
-                    parentPosition.y + offset.y + (y * tileSize.y),
-                    parentPosition.z
-                );
-
-                var tile = Instantiate(_tilePrefab, pos, Quaternion.identity, this.transform);
-                tile.name = $"Tile {x} {y}";
-
-                var isOffset = (x % 2 == 0 && y % 2 == 0) || (x % 2 != 0 && y % 2 != 0);
-                tile.Init(isOffset);
-
-                // Place the Rocket (PlayerPrefab) on the first tile
-                if (x == 0 && y == 0)
-                {
-                    PlayerPrefab.SetActive(true);
-                    PlayerPrefab.transform.position = new Vector3(pos.x, pos.y, -1); // Move it slightly forward
-                }
+                firstTile = tile.transform;
             }
         }
+    }
+}
 
-        // Center the grid in the camera view
-        var screenHeight = Camera.main.orthographicSize * 2;
-        var screenWidth = screenHeight * Camera.main.aspect;
-        transform.position = new Vector3(screenWidth / 2, screenHeight / 2, 0);
+
+    void PositionPlayer()
+    {
+        if (firstTile != null)
+        {
+            // Make the player a child of the grid
+            PlayerPrefab.transform.SetParent(transform);
+
+            // Position the player at the first tile's position with a z offset
+            PlayerPrefab.transform.position = new Vector3(
+                firstTile.position.x,
+                firstTile.position.y,
+                firstTile.position.z - 1 // Moved further forward to ensure it's visible
+            );
+
+            // Now activate the player
+            PlayerPrefab.SetActive(true);
+        }
     }
 }
