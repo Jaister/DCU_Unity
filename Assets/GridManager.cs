@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
+using System.Linq;
 
 public class GridManager : MonoBehaviour
 {
@@ -7,9 +9,12 @@ public class GridManager : MonoBehaviour
     [SerializeField] private int height = 10;
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private GameObject PlayerPrefab;
+    [SerializeField] private GameObject Operation;
     //Tile dict
     private Dictionary<Vector2, Tile> tileDict = new Dictionary<Vector2, Tile>();
     private Transform firstTile;
+    private int correctResult;
+    private const int MAX_TILES = 8;
 
     void Start()
     {
@@ -19,8 +24,40 @@ public class GridManager : MonoBehaviour
 
         // Position player after the grid is centered
         PositionPlayer();
+        //Generate first operation
     }
+    //void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Space))
+    //    {
+    //        CheckResult();
+    //    }
+    //}
+    public void CheckResult(int result)
+    {
+        TMP_Text Text = Operation.GetComponent<TMP_Text>();
+        if (result == correctResult)
+        {
+            Text.text = GenerateOperation();
+            NumberFiller(MAX_TILES-1);
+        }
+        else
+        {
+            Text.text = "Try again!";
+        }
+    }
+    string GenerateOperation()
+    {
+        int num1 = Random.Range(0, 10);
+        int num2 = Random.Range(0, 10);
+        correctResult = num1 + num2; // Store correct result
 
+        string operation = $"{num1} + {num2}";
+        TMP_Text text = Operation.GetComponent<TMP_Text>();
+        text.text = operation; // Update UI
+
+        return operation;
+    }
     void GenerateGrid()
 {
     // Get tile size from SpriteRenderer
@@ -64,7 +101,9 @@ public class GridManager : MonoBehaviour
             tileDict.Add(new Vector2(x, y), tile);
         }
     }
-    NumberFiller();
+        TMP_Text Text = Operation.GetComponent<TMP_Text>();
+        Text.text = GenerateOperation();
+        NumberFiller(MAX_TILES);
 
 }
 
@@ -88,20 +127,48 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    void NumberFiller(){
-        //If random in range is 0, then fill the tile with a number
-        //If random in range is 1, then deactivate number
-        foreach (Tile tile in tileDict.Values)
+    void NumberFiller(int maxTiles)
+    {
+        List<Tile> availableTiles = new List<Tile>(tileDict.Values);
+
+        // Ensure there are enough tiles to fill
+        if (availableTiles.Count < maxTiles) return;
+
+        // Shuffle the available tiles to pick random ones
+        availableTiles = availableTiles.OrderBy(t => Random.value).ToList();
+
+        // Select the tiles to be filled
+        List<Tile> selectedTiles = availableTiles.Take(maxTiles).ToList();
+
+        // Pick one random tile to hold the correct result
+        Tile correctTile = selectedTiles[Random.Range(0, selectedTiles.Count)];
+        correctTile.changeValue(correctResult);
+
+        Debug.Log($"Correct result {correctResult} placed on {correctTile.name}");
+
+        // Fill the rest of the tiles with random values
+        foreach (Tile tile in selectedTiles)
         {
-            int random = Random.Range(0, 2);
-            if (random == 0)
+            if (tile == correctTile) continue; // Skip the correct tile
+
+            int number;
+            do
             {
-                tile.changeValue(Random.Range(0, 10));
+                number = Random.Range(0, 20);
             }
-            else
-            {
-                tile.changeValue(-1);
-            }
+            while (number == correctResult); // Avoid duplicate correct result
+
+            tile.changeValue(number);
+        }
+
+        // Make sure all other tiles remain empty (-1)
+        foreach (Tile tile in availableTiles.Except(selectedTiles))
+        {
+            tile.changeValue(-1);
         }
     }
+
+
+
+
 }
