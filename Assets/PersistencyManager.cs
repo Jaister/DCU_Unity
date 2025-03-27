@@ -7,26 +7,19 @@ public class PersistencyManager : MonoBehaviour
     public string playerName;
 
     [SerializeField] private TMP_InputField playerNameInput;
-    [SerializeField] private TMP_InputField starsInput;
+    [SerializeField] private TMP_Text starsOutput;
 
     void Start()
     {
         //ResetData();
         LoadData();
+        starsOutput.text = $"Tienes {stars} estrellas {playerName}!!";
     }
 
-    public void SaveData()
+    public void SaveName()
     {
         // Get values from TMP Input Fields
-        //int.TryParse(starsInput.text, out int score);
         string name = playerNameInput.text;
-        int score = 0;
-
-        if (score >= 0)
-        {
-            stars = score;
-            PlayerPrefs.SetInt("Stars", score);
-        }
 
         if (!string.IsNullOrEmpty(name))
         {
@@ -35,14 +28,13 @@ public class PersistencyManager : MonoBehaviour
         }
 
         PlayerPrefs.Save();
-        Debug.Log("Data Saved!");
+        UpdateStarsText(name);
     }
 
     public void LoadData()
     {
         if (PlayerPrefs.HasKey("Stars")){
-        stars = PlayerPrefs.GetInt("Stars", 0); // Default value is 0
-        //starsInput.text = stars.ToString();
+        stars = PlayerPrefs.GetInt("Stars"); // Default value is 0
         }
         if (PlayerPrefs.HasKey("PlayerName")){
         playerName = PlayerPrefs.GetString("PlayerName", "Guest"); // Default value is "Guest"
@@ -56,8 +48,25 @@ public class PersistencyManager : MonoBehaviour
     public void ResetData()
     {
         PlayerPrefs.DeleteAll();
-        //starsInput.text = "";
         playerNameInput.text = "";
         Debug.Log("All data reset!");
+    }
+    public void AddStars()
+    {
+        stars += 1;
+        PlayerPrefs.SetInt("Stars", stars);
+        PlayerPrefs.Save();
+    }
+    public void UpdateStarsText(string playerName2 = null )
+    {
+        if (playerName2 == null)
+        {
+            starsOutput.text = $"Tienes {stars} estrellas {playerName}!!";
+
+        }
+        else
+        {
+            starsOutput.text = $"Tienes {stars} estrellas {playerName2}!!";
+        }
     }
 }

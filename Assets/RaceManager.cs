@@ -7,6 +7,7 @@ public class RaceManager : MonoBehaviour
 {
     [SerializeField] private GameObject optionPrefab; // Reference to the option prefab
     [SerializeField] private GameObject Operation; // Reference to the operation text
+    [SerializeField] private PersistencyManager persistencyManager; // Reference to the persistency manager
     private List<GameObject> instantiatedOptions = new List<GameObject>(); // Store instantiated options
     private int correctResult;
 
@@ -76,6 +77,8 @@ public class RaceManager : MonoBehaviour
         if (selectedValue == correctResult)
         {
             // Correct answer, generate new operation
+            persistencyManager.AddStars();
+            persistencyManager.UpdateStarsText();
             GenerateRaceOptions();
         }
         else

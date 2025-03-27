@@ -10,6 +10,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private GameObject PlayerPrefab;
     [SerializeField] private GameObject Operation;
+    [SerializeField] private PersistencyManager persistencyManager; // Reference to the persistency manager
+
     //Tile dict
     private Dictionary<Vector2, Tile> tileDict = new Dictionary<Vector2, Tile>();
     private Transform firstTile;
@@ -40,6 +42,8 @@ public class GridManager : MonoBehaviour
         {
             Text.text = GenerateOperation();
             NumberFiller(MAX_TILES-1);
+            persistencyManager.AddStars();
+            persistencyManager.UpdateStarsText();
         }
         else
         {
