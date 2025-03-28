@@ -8,6 +8,10 @@ public class BotonSI : MonoBehaviour
     public GameObject viejoDialogo;   // El texto original que quieres ocultar
     public GameObject botonSI;        // Botón verde
     public GameObject botonNO;        // Botón rojo
+    public GameObject pantalla3;
+    public GameObject pantallaDestino;
+
+    public float tiempoEspera = 2f; // Tiempo para leer antes de cambiar
 
     public void MostrarNuevoDialogo()
     {
@@ -22,5 +26,16 @@ public class BotonSI : MonoBehaviour
 
         if (botonNO != null)
             botonNO.SetActive(false);
+
+        Invoke("CambiarPantalla", tiempoEspera);
+    }
+
+    void CambiarPantalla()
+    {
+        if (pantalla3 != null)
+            pantalla3.SetActive(false);
+
+        if (pantallaDestino != null)
+            pantallaDestino.SetActive(true);
     }
 }
