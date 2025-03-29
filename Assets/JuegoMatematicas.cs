@@ -23,11 +23,13 @@ public class JuegoMatematicas : MonoBehaviour
     [Header("Número de cuentas totales")]
     public int totalCuentas = 10;
 
-    private int cuentasResueltas = 0;
+    public int cuentasResueltas = 0;
     private int respuestaCorrecta;
     private int ultimoA, ultimoB;
 
     [SerializeField] private PersistencyManager persistencyManager;
+    [SerializeField] private TMP_Text progress;
+    [SerializeField] private SelectorDePersonaje selectorDePersonaje;
 
     void Awake()
     {
@@ -41,7 +43,6 @@ public class JuegoMatematicas : MonoBehaviour
         // Mostrar el contenido cuando empieza realmente
         if (contenedorCuentas != null)
             contenedorCuentas.SetActive(true);
-
         GenerarNuevaCuenta();
     }
 
@@ -103,6 +104,7 @@ public class JuegoMatematicas : MonoBehaviour
             FindObjectOfType<ImpulsoPersonajeJugador>()?.DarImpulso();
             persistencyManager.AddStars();
             persistencyManager.UpdateStarsText();
+            progress.text = $"{cuentasResueltas}/{totalCuentas}";
 
 
             cuentasResueltas++;
@@ -144,7 +146,7 @@ public class JuegoMatematicas : MonoBehaviour
         Debug.Log("Llamado FinDelJuego");
 
         textoCuenta.text = "¡Fin de la carrera!";
-
+        selectorDePersonaje.DisableAnimations();
         foreach (Button btn in botonesRespuesta)
             btn.gameObject.SetActive(false);
 

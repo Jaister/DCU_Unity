@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 
 public class SelectorDePersonaje : MonoBehaviour
 {
@@ -30,11 +31,16 @@ public class SelectorDePersonaje : MonoBehaviour
     [Header("Personaje elegido")]
     public string personajeSeleccionado = "";
 
-    private JuegoMatematicas juegoMatematicas;
+    [SerializeField] private JuegoMatematicas juegoMatematicas;
+    [SerializeField] private GameObject juegoMatesGO;
     private bool haMostradoMensajeCentral = false;
     private bool haElegido = false;
 
     [SerializeField] private PersistencyManager persistencyManager;
+    [SerializeField] private TMP_Text progress;
+    [SerializeField] private Animator ZorroAnimator;
+    [SerializeField] private Animator GatoAnimator;
+    [SerializeField] private Animator PerezosoAnimator;
 
     void Start()
     {
@@ -55,10 +61,7 @@ public class SelectorDePersonaje : MonoBehaviour
         boton1?.gameObject.SetActive(false);
         boton2?.gameObject.SetActive(false);
         boton3?.gameObject.SetActive(false);
-
-        juegoMatematicas = FindObjectOfType<JuegoMatematicas>();
-        if (juegoMatematicas != null)
-            juegoMatematicas.enabled = false;
+        progress.text = $"{juegoMatematicas.cuentasResueltas}/{juegoMatematicas.totalCuentas}"; //HAbria que juntar todo esto es una puta chapuza
     }
 
     void Update()
@@ -85,6 +88,7 @@ public class SelectorDePersonaje : MonoBehaviour
             personajeSeleccionado = "Gato";
             textoBajoGato.SetActive(true);
             textoBajoGato.GetComponent<TMP_Text>().text = persistencyManager.playerName;
+            GatoAnimator.SetBool("Selected", true);
             FinalizarSeleccion();
         }
     }
@@ -96,7 +100,7 @@ public class SelectorDePersonaje : MonoBehaviour
             personajeSeleccionado = "Zorro";
             textoBajoZorro.SetActive(true);
             textoBajoZorro.GetComponent<TMP_Text>().text = persistencyManager.playerName;
-
+            ZorroAnimator.SetBool("Selected", true);
             FinalizarSeleccion();
         }
     }
@@ -108,7 +112,7 @@ public class SelectorDePersonaje : MonoBehaviour
             personajeSeleccionado = "Perezoso";
             textoBajoPerezoso.SetActive(true);
             textoBajoPerezoso.GetComponent<TMP_Text>().text = persistencyManager.playerName;
-
+            ZorroAnimator.SetBool("Selected", true);
             FinalizarSeleccion();
         }
     }
@@ -118,9 +122,19 @@ public class SelectorDePersonaje : MonoBehaviour
         haElegido = true;
         mensajeCentral?.SetActive(false);
         Debug.Log("Personaje elegido: " + personajeSeleccionado);
+        juegoMatesGO.SetActive(true);
+
         StartCoroutine(CuentaAtras());
     }
-
+    public void DisableAnimations()
+    {
+        GatoAnimator.SetBool("Selected", false);
+        ZorroAnimator.SetBool("Selected", false);
+        PerezosoAnimator.SetBool("Selected", false);
+        textoBajoGato.SetActive(false);
+        textoBajoZorro.SetActive(false);
+        textoBajoPerezoso.SetActive(false);
+    }
     IEnumerator CuentaAtras()
     {
         if (textoCuentaAtras == null)
@@ -144,10 +158,6 @@ public class SelectorDePersonaje : MonoBehaviour
         boton1?.gameObject.SetActive(true);
         boton2?.gameObject.SetActive(true);
         boton3?.gameObject.SetActive(true);
-
-        // ✅ Activar lógica de matemáticas
-        if (juegoMatematicas != null)
-            juegoMatematicas.enabled = true;
 
         FondoNubesScroll fondo = FindObjectOfType<FondoNubesScroll>();
         if (fondo != null)

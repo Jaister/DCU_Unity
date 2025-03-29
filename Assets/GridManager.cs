@@ -11,12 +11,15 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject PlayerPrefab;
     [SerializeField] private GameObject Operation;
     [SerializeField] private PersistencyManager persistencyManager; // Reference to the persistency manager
+    [SerializeField] private TMP_Text progress;
 
     //Tile dict
     private Dictionary<Vector2, Tile> tileDict = new Dictionary<Vector2, Tile>();
     private Transform firstTile;
     private int correctResult;
     private const int MAX_TILES = 8;
+    private int winCondition = 10;
+    private int winCount = 0;
 
     void Start()
     {
@@ -26,6 +29,7 @@ public class GridManager : MonoBehaviour
 
         // Position player after the grid is centered
         PositionPlayer();
+        progress.text = $"{winCount}/{winCondition}";
         //Generate first operation
     }
     //void Update()
@@ -44,6 +48,8 @@ public class GridManager : MonoBehaviour
             NumberFiller(MAX_TILES-1);
             persistencyManager.AddStars();
             persistencyManager.UpdateStarsText();
+            winCount++;
+            progress.text = $"{winCount}/{winCondition}";
         }
         else
         {
