@@ -5,18 +5,22 @@ using UnityEngine;
 public class DialogoInteractivo : MonoBehaviour
 {
     public GameObject[] dialogos;
-    public GameObject globoTexto; // 🗨️ El contenedor del globo de diálogo
+    public GameObject globoTexto;
     private int indice = 0;
+
+    [Header("Referencia al script de niveles")]
+    public NivelSelector nivelSelector; // ¡ASÍ se vuelve a conectar!
 
     void Start()
     {
-        // Ocultar todos los diálogos
+        if (globoTexto != null)
+            globoTexto.SetActive(true);
+
         foreach (GameObject d in dialogos)
         {
             d.SetActive(false);
         }
 
-        // Mostrar el primero
         if (dialogos.Length > 0)
         {
             dialogos[0].SetActive(true);
@@ -33,24 +37,29 @@ public class DialogoInteractivo : MonoBehaviour
     }
 
     void MostrarSiguiente()
+{
+    if (indice < dialogos.Length)
     {
-        if (indice < dialogos.Length)
-        {
-            dialogos[indice - 1].SetActive(false); // Oculta el anterior
-            dialogos[indice].SetActive(true);      // Muestra el nuevo
-            indice++;
-        }
-        else
-        {
-            // Oculta el último diálogo visible si queda
-            if (indice - 1 < dialogos.Length)
-                dialogos[indice - 1].SetActive(false);
+        // Oculta el diálogo anterior si no es el primero
+        if (indice - 1 >= 0)
+            dialogos[indice - 1].SetActive(false);
 
-            // Oculta el globo completo
-            if (globoTexto != null)
-                globoTexto.SetActive(false);
-
-            Debug.Log("Fin de la explicación.");
-        }
+        dialogos[indice].SetActive(true);
+        indice++;
     }
+    else
+    {
+        if (indice - 1 < dialogos.Length)
+            dialogos[indice - 1].SetActive(false);
+
+        if (globoTexto != null)
+            globoTexto.SetActive(false);
+
+        Debug.Log("Fin del diálogo");
+
+        if (nivelSelector != null)
+            nivelSelector.DesbloquearNivel(1);
+    }
+}
+
 }
