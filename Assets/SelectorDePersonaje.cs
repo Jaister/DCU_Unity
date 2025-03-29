@@ -21,9 +21,16 @@ public class SelectorDePersonaje : MonoBehaviour
     [Header("Texto de cuenta atrás")]
     public TextMeshProUGUI textoCuentaAtras;
 
+    [Header("Elementos del juego de cuentas")]
+    public TextMeshProUGUI textoCuenta;
+    public Button boton1;
+    public Button boton2;
+    public Button boton3;
+
     [Header("Personaje elegido")]
     public string personajeSeleccionado = "";
 
+    private JuegoMatematicas juegoMatematicas;
     private bool haMostradoMensajeCentral = false;
     private bool haElegido = false;
 
@@ -36,9 +43,20 @@ public class SelectorDePersonaje : MonoBehaviour
 
         globoTextoInicial?.SetActive(true);
         textoDialogoInicial?.SetActive(true);
+        marciano?.SetActive(true);
 
         if (textoCuentaAtras != null)
             textoCuentaAtras.gameObject.SetActive(false);
+
+        // 🔒 Ocultar texto y botones del juego
+        textoCuenta?.gameObject.SetActive(false);
+        boton1?.gameObject.SetActive(false);
+        boton2?.gameObject.SetActive(false);
+        boton3?.gameObject.SetActive(false);
+
+        juegoMatematicas = FindObjectOfType<JuegoMatematicas>();
+        if (juegoMatematicas != null)
+            juegoMatematicas.enabled = false;
     }
 
     void Update()
@@ -112,8 +130,27 @@ public class SelectorDePersonaje : MonoBehaviour
         }
 
         textoCuentaAtras.gameObject.SetActive(false);
-
-        // Aquí podrías iniciar la carrera, mostrar otro panel, etc.
         Debug.Log("Comienza la carrera");
+
+        // ✅ Mostrar los elementos del juego de cuentas
+        textoCuenta?.gameObject.SetActive(true);
+        boton1?.gameObject.SetActive(true);
+        boton2?.gameObject.SetActive(true);
+        boton3?.gameObject.SetActive(true);
+
+        // ✅ Activar lógica de matemáticas
+        if (juegoMatematicas != null)
+            juegoMatematicas.enabled = true;
+
+        FondoNubesScroll fondo = FindObjectOfType<FondoNubesScroll>();
+        if (fondo != null)
+            fondo.ActivarScroll();
+
+        ImpulsoPersonajeJugador impulso = FindObjectOfType<ImpulsoPersonajeJugador>();
+        if (impulso != null)
+        {
+            impulso.personajeJugador = personajeSeleccionado;
+        }
+
     }
 }

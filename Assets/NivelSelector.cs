@@ -44,4 +44,23 @@ public class NivelSelector : MonoBehaviour
         if (pantallaJuego != null)
             pantallaJuego.SetActive(true);
     }
+
+ public void VolverDesdeCarrera()
+{
+    Debug.Log("Volviendo a selector de niveles");
+
+    if (pantallaJuego != null)
+    {
+        pantallaJuego.SetActive(false);
+        Debug.Log("Pantalla de juego ocultada");
+    }
+
+    if (pantallaActual != null)
+    {
+        pantallaActual.SetActive(true);
+        Debug.Log("Pantalla de niveles activada");
+    }
+}
+
+
 }

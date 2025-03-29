@@ -11,6 +11,11 @@ public class DialogoInteractivo : MonoBehaviour
     [Header("Referencia al script de niveles")]
     public NivelSelector nivelSelector; // ¡ASÍ se vuelve a conectar!
 
+    [Header("Diálogos post-carrera")]
+    public GameObject[] dialogosFinales;
+    private int indiceFinal = 0;
+    private bool mostrandoFinal = false;
+
     void Start()
     {
         if (globoTexto != null)
@@ -28,13 +33,36 @@ public class DialogoInteractivo : MonoBehaviour
         }
     }
 
-    void Update()
+   void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            MostrarSiguiente();
+            if (mostrandoFinal)
+                MostrarSiguienteFinal();
+            else
+                MostrarSiguiente();
         }
     }
+
+    void MostrarSiguienteFinal()
+    {
+        if (indiceFinal < dialogosFinales.Length)
+        {
+            dialogosFinales[indiceFinal - 1].SetActive(false);
+            dialogosFinales[indiceFinal].SetActive(true);
+            indiceFinal++;
+        }
+        else
+        {
+            dialogosFinales[indiceFinal - 1].SetActive(false);
+            globoTexto?.SetActive(false);
+            mostrandoFinal = false;
+
+            Debug.Log("Fin del diálogo final.");
+            // Aquí podrías activar botones, permitir repetir nivel, etc.
+        }
+    }
+
 
     void MostrarSiguiente()
 {
@@ -61,5 +89,24 @@ public class DialogoInteractivo : MonoBehaviour
             nivelSelector.DesbloquearNivel(1);
     }
 }
+
+public void MostrarDialogoFinal()
+{
+    mostrandoFinal = true;
+    indiceFinal = 0;
+
+    // Oculta los diálogos iniciales
+    foreach (GameObject d in dialogos)
+        d.SetActive(false);
+
+    globoTexto?.SetActive(true);
+
+    if (dialogosFinales.Length > 0)
+    {
+        dialogosFinales[0].SetActive(true);
+        indiceFinal = 1;
+    }
+}
+
 
 }
