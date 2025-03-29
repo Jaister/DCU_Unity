@@ -112,7 +112,7 @@ public class SelectorDePersonaje : MonoBehaviour
             personajeSeleccionado = "Perezoso";
             textoBajoPerezoso.SetActive(true);
             textoBajoPerezoso.GetComponent<TMP_Text>().text = persistencyManager.playerName;
-            ZorroAnimator.SetBool("Selected", true);
+            PerezosoAnimator.SetBool("Selected", true);
             FinalizarSeleccion();
         }
     }

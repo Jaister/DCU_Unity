@@ -819,6 +819,7 @@ MonoBehaviour:
   botonGato: {fileID: 108611463}
   botonZorro: {fileID: 442545739}
   botonPerezoso: {fileID: 474565093}
+  juego: {fileID: 149416548}
   desplazamiento: 10
   duracionDeslizamiento: 0.3
   personajeJugador: 
@@ -1381,6 +1382,8 @@ MonoBehaviour:
   persistencyManager: {fileID: 1822762593}
   progress: {fileID: 736039040}
   selectorDePersonaje: {fileID: 1141136774}
+  juegoGO: {fileID: 501706328}
+  NivelSelector: {fileID: 736641687}
 --- !u!1 &175120084
 GameObject:
   m_ObjectHideFlags: 0
@@ -5094,7 +5097,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!225 &501706329
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6525,7 +6528,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!225 &636460123
 CanvasGroup:
   m_ObjectHideFlags: 0

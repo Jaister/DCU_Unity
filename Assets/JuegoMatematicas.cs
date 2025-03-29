@@ -30,6 +30,8 @@ public class JuegoMatematicas : MonoBehaviour
     [SerializeField] private PersistencyManager persistencyManager;
     [SerializeField] private TMP_Text progress;
     [SerializeField] private SelectorDePersonaje selectorDePersonaje;
+    [SerializeField] private GameObject juegoGO;
+    [SerializeField] private GameObject NivelSelector;
 
     void Awake()
     {
@@ -149,11 +151,9 @@ public class JuegoMatematicas : MonoBehaviour
         selectorDePersonaje.DisableAnimations();
         foreach (Button btn in botonesRespuesta)
             btn.gameObject.SetActive(false);
+        NivelSelector.SetActive(true);
+        juegoGO.SetActive(false);
 
-        // Ir a pantalla de niveles
-        NivelSelector nivelSelector = FindObjectOfType<NivelSelector>();
-        if (nivelSelector != null)
-            nivelSelector.VolverDesdeCarrera();
     }
 
 }

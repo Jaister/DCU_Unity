@@ -8,14 +8,17 @@ public class ImpulsoPersonajeJugador : MonoBehaviour
     public RectTransform botonGato;
     public RectTransform botonZorro;
     public RectTransform botonPerezoso;
-
+    [SerializeField] private JuegoMatematicas juego;
     [Header("Configuración de impulso")]
-    public float desplazamiento = 10f;
+    public float desplazamiento; // Desplazamiento en píxeles calculado al centro de la pantalla
     public float duracionDeslizamiento = 0.3f; // Duración del impulso suave
 
     [Header("Personaje jugador")]
     public string personajeJugador = "";
-
+    private void Start()
+    {
+        desplazamiento = 530f / juego.totalCuentas;
+    }
     public void DarImpulso()
     {
         RectTransform objetivo = null;
