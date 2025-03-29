@@ -5,6 +5,7 @@ public class PersistencyManager : MonoBehaviour
 {
     public int stars;
     public string playerName;
+    public bool selectorDialogue;
 
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private TMP_Text starsOutput;
@@ -40,9 +41,12 @@ public class PersistencyManager : MonoBehaviour
         playerName = PlayerPrefs.GetString("PlayerName", "Guest"); // Default value is "Guest"
         playerNameInput.text = playerName;
         }
-        // Update TMP Input Fields with loaded data
+        if (PlayerPrefs.HasKey("SelectorDialogue"))
+        {
+            selectorDialogue = PlayerPrefs.GetInt("SelectorDialogue") == 1;
+        }
 
-        Debug.Log($"Loaded Data -> Stars: {stars}, PlayerName: {playerName}");
+        Debug.Log($"Loaded Data -> Stars: {stars}, PlayerName: {playerName}, SelectorDialogue: {selectorDialogue}");
     }
 
     public void ResetData()
@@ -56,6 +60,14 @@ public class PersistencyManager : MonoBehaviour
         stars += 1;
         PlayerPrefs.SetInt("Stars", stars);
         PlayerPrefs.Save();
+    }
+    public void SelectorDialogueComplete()
+    {
+        selectorDialogue = true;
+        PlayerPrefs.SetInt("SelectorDialogue", 1);
+        PlayerPrefs.Save();
+        Debug.Log("Selector dialogue complete!");
+
     }
     public void UpdateStarsText(string playerName2 = null )
     {

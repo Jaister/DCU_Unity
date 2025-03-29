@@ -27,6 +27,8 @@ public class JuegoMatematicas : MonoBehaviour
     private int respuestaCorrecta;
     private int ultimoA, ultimoB;
 
+    [SerializeField] private PersistencyManager persistencyManager;
+
     void Awake()
     {
         // Ocultar todo al principio
@@ -99,6 +101,8 @@ public class JuegoMatematicas : MonoBehaviour
             boton.GetComponent<Image>().color = colorCorrecto;
             textoCuenta.text = "Correcto!";
             FindObjectOfType<ImpulsoPersonajeJugador>()?.DarImpulso();
+            persistencyManager.AddStars();
+            persistencyManager.UpdateStarsText();
 
 
             cuentasResueltas++;

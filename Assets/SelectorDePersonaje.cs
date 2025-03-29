@@ -34,6 +34,8 @@ public class SelectorDePersonaje : MonoBehaviour
     private bool haMostradoMensajeCentral = false;
     private bool haElegido = false;
 
+    [SerializeField] private PersistencyManager persistencyManager;
+
     void Start()
     {
         mensajeCentral?.SetActive(false);
@@ -81,7 +83,8 @@ public class SelectorDePersonaje : MonoBehaviour
         if (haMostradoMensajeCentral && !haElegido)
         {
             personajeSeleccionado = "Gato";
-            textoBajoGato?.SetActive(true);
+            textoBajoGato.SetActive(true);
+            textoBajoGato.GetComponent<TMP_Text>().text = persistencyManager.playerName;
             FinalizarSeleccion();
         }
     }
@@ -91,7 +94,9 @@ public class SelectorDePersonaje : MonoBehaviour
         if (haMostradoMensajeCentral && !haElegido)
         {
             personajeSeleccionado = "Zorro";
-            textoBajoZorro?.SetActive(true);
+            textoBajoZorro.SetActive(true);
+            textoBajoZorro.GetComponent<TMP_Text>().text = persistencyManager.playerName;
+
             FinalizarSeleccion();
         }
     }
@@ -101,7 +106,9 @@ public class SelectorDePersonaje : MonoBehaviour
         if (haMostradoMensajeCentral && !haElegido)
         {
             personajeSeleccionado = "Perezoso";
-            textoBajoPerezoso?.SetActive(true);
+            textoBajoPerezoso.SetActive(true);
+            textoBajoPerezoso.GetComponent<TMP_Text>().text = persistencyManager.playerName;
+
             FinalizarSeleccion();
         }
     }

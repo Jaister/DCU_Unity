@@ -16,9 +16,11 @@ public class DialogoInteractivo : MonoBehaviour
     private int indiceFinal = 0;
     private bool mostrandoFinal = false;
 
+    [SerializeField] private PersistencyManager persistencyManager;
+
     void Start()
     {
-        if (globoTexto != null)
+        if (globoTexto != null && !persistencyManager.selectorDialogue)
             globoTexto.SetActive(true);
 
         foreach (GameObject d in dialogos)
@@ -26,7 +28,7 @@ public class DialogoInteractivo : MonoBehaviour
             d.SetActive(false);
         }
 
-        if (dialogos.Length > 0)
+        if (dialogos.Length > 0 && !persistencyManager.selectorDialogue)
         {
             dialogos[0].SetActive(true);
             indice = 1;
@@ -35,12 +37,15 @@ public class DialogoInteractivo : MonoBehaviour
 
    void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!persistencyManager.selectorDialogue)
         {
-            if (mostrandoFinal)
-                MostrarSiguienteFinal();
-            else
-                MostrarSiguiente();
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (mostrandoFinal)
+                    MostrarSiguienteFinal();
+                else
+                    MostrarSiguiente();
+            }
         }
     }
 
@@ -82,19 +87,18 @@ public class DialogoInteractivo : MonoBehaviour
 
         if (globoTexto != null)
             globoTexto.SetActive(false);
-
-        Debug.Log("Fin del diálogo");
+            persistencyManager.SelectorDialogueComplete();
+            Debug.Log("Fin del diálogo");
 
         if (nivelSelector != null)
             nivelSelector.DesbloquearNivel(1);
     }
 }
 
-public void MostrarDialogoFinal()
+/*public void MostrarDialogoFinal()
 {
     mostrandoFinal = true;
     indiceFinal = 0;
-
     // Oculta los diálogos iniciales
     foreach (GameObject d in dialogos)
         d.SetActive(false);
@@ -106,7 +110,7 @@ public void MostrarDialogoFinal()
         dialogosFinales[0].SetActive(true);
         indiceFinal = 1;
     }
-}
+}*/
 
 
 }

@@ -12,37 +12,26 @@ public class NivelSelector : MonoBehaviour
     [Header("Pantallas")]
     public GameObject pantallaActual;       // Pantalla del selector de niveles
     public GameObject pantallaJuego;        // Pantalla del nivel 1 (juego)
+    [SerializeField]private List<GameObject> pantallasNiveles = new List<GameObject>(); 
 
     void Start()
     {
         // Todos bloqueados al principio
-        for (int i = 0; i < botonesNiveles.Length; i++)
+        /*for (int i = 0; i < botonesNiveles.Length; i++)
         {
             botonesNiveles[i].interactable = false;
             botonesNiveles[i].GetComponent<Image>().color = colorBloqueado;
-        }
+        }*/
     }
-
+    /// <summary>
+    /// Desbloquea un nivel dado un entero del 1 al 3
+    /// </summary>
+    /// <param name="nivel"></param>
     public void DesbloquearNivel(int nivel)
     {
-        if (nivel - 1 >= 0 && nivel - 1 < botonesNiveles.Length)
-        {
-            Button boton = botonesNiveles[nivel - 1];
-            boton.interactable = true;
-            boton.GetComponent<Image>().color = colorDesbloqueado;
-
-            if (nivel == 1)
-                boton.onClick.AddListener(() => MostrarPantallaJuego());
-        }
-    }
-
-    public void MostrarPantallaJuego()
-    {
-        if (pantallaActual != null)
-            pantallaActual.SetActive(false);
-
-        if (pantallaJuego != null)
-            pantallaJuego.SetActive(true);
+        Button boton = botonesNiveles[nivel - 1];
+        boton.interactable = true;
+        boton.GetComponent<Image>().color = colorDesbloqueado;
     }
 
  public void VolverDesdeCarrera()
