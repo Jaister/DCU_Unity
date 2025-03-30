@@ -7,6 +7,7 @@ public class PersistencyManager : MonoBehaviour
     public string playerName;
     public bool selectorDialogue;
     public bool acertoTodo = false;
+    public int nivelActual = 1;
 
 
     [SerializeField] private TMP_InputField playerNameInput;
@@ -23,6 +24,7 @@ public class PersistencyManager : MonoBehaviour
 
    void Start()
     {
+        //ResetData();
         LoadData(); // No resetear al arrancar
         starsOutput.text = $"Tienes {stars} estrellas {playerName}!!";
     }
@@ -63,6 +65,9 @@ public class PersistencyManager : MonoBehaviour
             playerName = PlayerPrefs.GetString("PlayerName", "Guest");
             playerNameInput.text = playerName;
         }
+        if (PlayerPrefs.HasKey("NivelActual")){
+            nivelActual = PlayerPrefs.GetInt("NivelActual",1);
+        }
 
         if (PlayerPrefs.HasKey("SelectorDialogue"))
             selectorDialogue = PlayerPrefs.GetInt("SelectorDialogue") == 1;
@@ -93,6 +98,12 @@ public class PersistencyManager : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Selector dialogue complete!");
 
+    }
+    public void SetNivelActual(int nivel)
+    {
+        nivelActual = nivel;
+        PlayerPrefs.SetInt("NivelActual", nivel);
+        PlayerPrefs.Save();
     }
     public void UpdateStarsText(string playerName2 = null )
     {

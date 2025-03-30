@@ -18,6 +18,9 @@ public class DialogoConBotones : MonoBehaviour
     private int indice = 0;
     private bool terminado = false;
 
+    [SerializeField]private JuegoMatematicas juegoMatematicas;
+    [SerializeField] private ImpulsoPersonajeJugador impulsoPersonajeJugador;
+
     void Start()
     {
         foreach (GameObject d in dialogos)
@@ -40,7 +43,27 @@ public class DialogoConBotones : MonoBehaviour
             MostrarSiguiente();
         }
     }
+    public void ResetDialogo()
+    {
+        indice = 0;
+        terminado = false;
 
+        foreach (GameObject d in dialogos)
+            d.SetActive(false);
+
+        if (botonSI != null) botonSI.SetActive(false);
+        if (botonNO != null) botonNO.SetActive(false);
+
+        if (dialogos.Length > 0)
+        {
+            dialogos[0].SetActive(true);
+            indice = 1;
+        }
+        juegoMatematicas.cuentasResueltas = 0;
+        juegoMatematicas.progress.text = $"{juegoMatematicas.cuentasResueltas}/{juegoMatematicas.totalCuentas}";
+        impulsoPersonajeJugador.desplazamiento = 0;
+
+    }
     void MostrarSiguiente()
     {
         if (indice < dialogos.Length)

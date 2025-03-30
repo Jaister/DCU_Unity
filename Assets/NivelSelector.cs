@@ -29,9 +29,11 @@ public class NivelSelector : MonoBehaviour
     /// <param name="nivel"></param>
     public void DesbloquearNivel(int nivel)
     {
-        Button boton = botonesNiveles[nivel - 1];
-        boton.interactable = true;
-        boton.GetComponent<Image>().color = colorDesbloqueado;
+        for (int i = 0; i < nivel; i++)
+        {
+            botonesNiveles[i].interactable = true;
+            botonesNiveles[i].GetComponent<Image>().color = Color.white;
+        }
     }
 
     

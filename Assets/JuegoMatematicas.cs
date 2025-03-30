@@ -32,10 +32,11 @@ public class JuegoMatematicas : MonoBehaviour
 
 
     [SerializeField] private PersistencyManager persistencyManager;
-    [SerializeField] private TMP_Text progress;
+    [SerializeField] public TMP_Text progress;
     [SerializeField] private SelectorDePersonaje selectorDePersonaje;
     [SerializeField] private GameObject juegoGO;
     [SerializeField] private GameObject NivelSelector;
+    [SerializeField] private DialogoConBotones dialogoConBotones;
 
     void Awake()
     {
@@ -170,7 +171,7 @@ public class JuegoMatematicas : MonoBehaviour
         juegoGO.SetActive(false);
 
         persistencyManager.selectorDialogue = true;
-
+        dialogoConBotones.ResetDialogo();
      bool superadoSinErrores = aciertosSinFallo == totalCuentas;
         persistencyManager.SetAcertoTodo(superadoSinErrores);
         persistencyManager.SetDesbloqueoPendiente(true);

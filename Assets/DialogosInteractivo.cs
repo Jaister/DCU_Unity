@@ -30,7 +30,6 @@ public class DialogoInteractivo : MonoBehaviour
             foreach (GameObject d in dialogosFinales) d.SetActive(false);
             foreach (GameObject d in dialogosFallo) d.SetActive(false);
 
-            globoTexto?.SetActive(true);
 
             // ✅ Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
             if (persistencyManager.desbloqueoPendiente)
@@ -45,33 +44,41 @@ public class DialogoInteractivo : MonoBehaviour
                 else
                 {
                     mostrandoFallo = true;
+                    
                     MostrarDialogoFallo();
                 }
-                return;
             }
-
-            // ✅ Diálogo normal inicial (si nunca se ha mostrado antes)
+        // ✅ Diálogo normal inicial (si nunca se ha mostrado antes)
             if (!persistencyManager.selectorDialogue && dialogos.Length > 0)
             {
                 dialogos[0].SetActive(true);
+                globoTexto.SetActive(true);
                 indice = 1;
             }
-}
+            else
+            {
+                nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
+            Debug.Log("Desbloqueando nivel " + persistencyManager.nivelActual);
+
+        }
+    }
 
 
 
    void Update()
 {
-    if (Input.GetMouseButtonDown(0))
-    {
-        if (mostrandoFinal)
-            MostrarSiguienteFinal();
-        else if (mostrandoFallo)
-            MostrarSiguienteFallo();
-        else
-            MostrarSiguiente();
-    }
-
+        if (!persistencyManager.selectorDialogue)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (mostrandoFinal)
+                    MostrarSiguienteFinal();
+                else if (mostrandoFallo)
+                    MostrarSiguienteFallo();
+                else
+                    MostrarSiguiente();
+            }
+        }
 }
 
 
@@ -93,7 +100,10 @@ public class DialogoInteractivo : MonoBehaviour
 
             // ✅ Desbloquear nivel 2
             if (nivelSelector != null)
+            {
                 nivelSelector.DesbloquearNivel(2);
+                persistencyManager.SetNivelActual(2);
+            }
 
             // ✅ Limpiar el flag para que no se repita
             persistencyManager.acertoTodo = false;
