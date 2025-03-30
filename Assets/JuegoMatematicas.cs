@@ -26,6 +26,10 @@ public class JuegoMatematicas : MonoBehaviour
     public int cuentasResueltas = 0;
     private int respuestaCorrecta;
     private int ultimoA, ultimoB;
+    private bool falloEnEstaCuenta = false;
+    private int aciertosSinFallo = 0;
+
+
 
     [SerializeField] private PersistencyManager persistencyManager;
     [SerializeField] private TMP_Text progress;
@@ -50,6 +54,9 @@ public class JuegoMatematicas : MonoBehaviour
 
     void GenerarNuevaCuenta()
     {
+        // ✅ Reiniciamos el flag de fallo
+        falloEnEstaCuenta = false;
+
         if (cuentasResueltas >= totalCuentas)
         {
             FinDelJuego();
@@ -94,7 +101,7 @@ public class JuegoMatematicas : MonoBehaviour
         }
     }
 
-    void ComprobarRespuesta(int seleccion, Button boton)
+   void ComprobarRespuesta(int seleccion, Button boton)
     {
         foreach (Button btn in botonesRespuesta)
             btn.interactable = false;
@@ -104,21 +111,29 @@ public class JuegoMatematicas : MonoBehaviour
             boton.GetComponent<Image>().color = colorCorrecto;
             textoCuenta.text = "Correcto!";
             FindObjectOfType<ImpulsoPersonajeJugador>()?.DarImpulso();
-            persistencyManager.AddStars();
+
+            if (!falloEnEstaCuenta)
+            {
+                aciertosSinFallo++; // ✅ Contamos solo si acierta a la primera
+                persistencyManager.AddStars();
+            }
+
+            cuentasResueltas++;
             persistencyManager.UpdateStarsText();
             progress.text = $"{cuentasResueltas}/{totalCuentas}";
 
-
-            cuentasResueltas++;
             Invoke(nameof(GenerarNuevaCuenta), 1.2f);
         }
+
         else
         {
+            falloEnEstaCuenta = true; // ❌ Marcamos que ha fallado en esta cuenta
             boton.GetComponent<Image>().color = colorIncorrecto;
             textoCuenta.text = "Incorrecto, inténtalo de nuevo";
             Invoke(nameof(RepetirMismaCuenta), 1.5f);
         }
     }
+
 
     void RepetirMismaCuenta()
     {
@@ -154,6 +169,25 @@ public class JuegoMatematicas : MonoBehaviour
         NivelSelector.SetActive(true);
         juegoGO.SetActive(false);
 
+        persistencyManager.selectorDialogue = true;
+
+     bool superadoSinErrores = aciertosSinFallo == totalCuentas;
+        persistencyManager.SetAcertoTodo(superadoSinErrores);
+        persistencyManager.SetDesbloqueoPendiente(true);
+
+
+    NivelSelector.SetActive(true);
+    juegoGO.SetActive(false);
+
+    // 🧠 Reiniciamos el diálogo interactivo
+    DialogoInteractivo dialogo = FindObjectOfType<DialogoInteractivo>();
+    if (dialogo != null)
+    {
+        dialogo.enabled = false;
+        dialogo.enabled = true;
     }
+    }
+
+    
 
 }

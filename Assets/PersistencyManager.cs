@@ -6,16 +6,27 @@ public class PersistencyManager : MonoBehaviour
     public int stars;
     public string playerName;
     public bool selectorDialogue;
+    public bool acertoTodo = false;
+
 
     [SerializeField] private TMP_InputField playerNameInput;
     [SerializeField] private TMP_Text starsOutput;
 
-    void Start()
+    public bool desbloqueoPendiente = false;
+
+    public void SetDesbloqueoPendiente(bool valor)
     {
-        //ResetData();
-        LoadData();
+        desbloqueoPendiente = valor;
+        PlayerPrefs.SetInt("DesbloqueoPendiente", valor ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+   void Start()
+    {
+        LoadData(); // No resetear al arrancar
         starsOutput.text = $"Tienes {stars} estrellas {playerName}!!";
     }
+
 
     public void SaveName()
     {
@@ -32,22 +43,36 @@ public class PersistencyManager : MonoBehaviour
         UpdateStarsText(name);
     }
 
+   public void SetAcertoTodo(bool valor)
+    {
+        acertoTodo = valor;
+        PlayerPrefs.SetInt("AcertoTodo", valor ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
     public void LoadData()
     {
-        if (PlayerPrefs.HasKey("Stars")){
-        stars = PlayerPrefs.GetInt("Stars"); // Default value is 0
-        }
-        if (PlayerPrefs.HasKey("PlayerName")){
-        playerName = PlayerPrefs.GetString("PlayerName", "Guest"); // Default value is "Guest"
-        playerNameInput.text = playerName;
-        }
-        if (PlayerPrefs.HasKey("SelectorDialogue"))
+        if (PlayerPrefs.HasKey("Stars"))
+            stars = PlayerPrefs.GetInt("Stars");
+            
+        if (PlayerPrefs.HasKey("DesbloqueoPendiente"))
+        desbloqueoPendiente = PlayerPrefs.GetInt("DesbloqueoPendiente") == 1;
+
+        if (PlayerPrefs.HasKey("PlayerName"))
         {
-            selectorDialogue = PlayerPrefs.GetInt("SelectorDialogue") == 1;
+            playerName = PlayerPrefs.GetString("PlayerName", "Guest");
+            playerNameInput.text = playerName;
         }
 
-        Debug.Log($"Loaded Data -> Stars: {stars}, PlayerName: {playerName}, SelectorDialogue: {selectorDialogue}");
+        if (PlayerPrefs.HasKey("SelectorDialogue"))
+            selectorDialogue = PlayerPrefs.GetInt("SelectorDialogue") == 1;
+
+        if (PlayerPrefs.HasKey("AcertoTodo"))
+            acertoTodo = PlayerPrefs.GetInt("AcertoTodo") == 1;
+
+        Debug.Log($"Loaded Data -> Stars: {stars}, PlayerName: {playerName}, SelectorDialogue: {selectorDialogue}, AcertoTodo: {acertoTodo}");
     }
+
 
     public void ResetData()
     {

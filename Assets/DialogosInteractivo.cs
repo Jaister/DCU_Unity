@@ -16,38 +16,64 @@ public class DialogoInteractivo : MonoBehaviour
     private int indiceFinal = 0;
     private bool mostrandoFinal = false;
 
+    [Header("Diálogos si NO acierta todo")]
+    public GameObject[] dialogosFallo;
+    private int indiceFallo = 0;
+    private bool mostrandoFallo = false;
+
     [SerializeField] private PersistencyManager persistencyManager;
 
-    void Start()
-    {
-        if (globoTexto != null && !persistencyManager.selectorDialogue)
-            globoTexto.SetActive(true);
-
-        foreach (GameObject d in dialogos)
+        void OnEnable()
         {
-            d.SetActive(false);
-        }
+            // 🔁 Ocultar todos los diálogos por si acaso
+            foreach (GameObject d in dialogos) d.SetActive(false);
+            foreach (GameObject d in dialogosFinales) d.SetActive(false);
+            foreach (GameObject d in dialogosFallo) d.SetActive(false);
 
-        if (dialogos.Length > 0 && !persistencyManager.selectorDialogue)
-        {
-            dialogos[0].SetActive(true);
-            indice = 1;
-        }
-    }
+            globoTexto?.SetActive(true);
+
+            // ✅ Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
+            if (persistencyManager.desbloqueoPendiente)
+            {
+                persistencyManager.SetDesbloqueoPendiente(false); // lo consumes
+
+                if (persistencyManager.acertoTodo)
+                {
+                    mostrandoFinal = true;
+                    MostrarDialogoFinal();
+                }
+                else
+                {
+                    mostrandoFallo = true;
+                    MostrarDialogoFallo();
+                }
+                return;
+            }
+
+            // ✅ Diálogo normal inicial (si nunca se ha mostrado antes)
+            if (!persistencyManager.selectorDialogue && dialogos.Length > 0)
+            {
+                dialogos[0].SetActive(true);
+                indice = 1;
+            }
+}
+
+
 
    void Update()
+{
+    if (Input.GetMouseButtonDown(0))
     {
-        if (!persistencyManager.selectorDialogue)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (mostrandoFinal)
-                    MostrarSiguienteFinal();
-                else
-                    MostrarSiguiente();
-            }
-        }
+        if (mostrandoFinal)
+            MostrarSiguienteFinal();
+        else if (mostrandoFallo)
+            MostrarSiguienteFallo();
+        else
+            MostrarSiguiente();
     }
+
+}
+
 
     void MostrarSiguienteFinal()
     {
@@ -64,8 +90,15 @@ public class DialogoInteractivo : MonoBehaviour
             mostrandoFinal = false;
 
             Debug.Log("Fin del diálogo final.");
-            // Aquí podrías activar botones, permitir repetir nivel, etc.
+
+            // ✅ Desbloquear nivel 2
+            if (nivelSelector != null)
+                nivelSelector.DesbloquearNivel(2);
+
+            // ✅ Limpiar el flag para que no se repita
+            persistencyManager.acertoTodo = false;
         }
+
     }
 
 
@@ -95,22 +128,57 @@ public class DialogoInteractivo : MonoBehaviour
     }
 }
 
-/*public void MostrarDialogoFinal()
-{
-    mostrandoFinal = true;
-    indiceFinal = 0;
-    // Oculta los diálogos iniciales
+    public void MostrarDialogoFinal()
+    {
+        mostrandoFinal = true;
+        indiceFinal = 0;
+
+        foreach (GameObject d in dialogos)
+            d.SetActive(false);
+
+        globoTexto?.SetActive(true);
+
+        if (dialogosFinales.Length > 0)
+        {
+            dialogosFinales[0].SetActive(true);
+            indiceFinal = 1;
+        }
+    }
+
+    void MostrarDialogoFallo()
+    {
+    mostrandoFallo = true;
+    indiceFallo = 0;
+
     foreach (GameObject d in dialogos)
         d.SetActive(false);
 
     globoTexto?.SetActive(true);
 
-    if (dialogosFinales.Length > 0)
+    if (dialogosFallo.Length > 0)
     {
-        dialogosFinales[0].SetActive(true);
-        indiceFinal = 1;
+        dialogosFallo[0].SetActive(true);
+        indiceFallo = 1;
     }
-}*/
+    }
+
+    void MostrarSiguienteFallo()
+{
+    if (indiceFallo < dialogosFallo.Length)
+    {
+        dialogosFallo[indiceFallo - 1].SetActive(false);
+        dialogosFallo[indiceFallo].SetActive(true);
+        indiceFallo++;
+    }
+    else
+    {
+        dialogosFallo[indiceFallo - 1].SetActive(false);
+        globoTexto?.SetActive(false);
+        mostrandoFallo = false;
+
+        Debug.Log("Fin del diálogo de fallo.");
+    }
+}
 
 
 }

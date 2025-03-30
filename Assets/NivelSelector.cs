@@ -16,12 +16,12 @@ public class NivelSelector : MonoBehaviour
 
     void Start()
     {
-        // Todos bloqueados al principio
-        /*for (int i = 0; i < botonesNiveles.Length; i++)
+        
+        for (int i = 0; i < botonesNiveles.Length; i++)
         {
             botonesNiveles[i].interactable = false;
             botonesNiveles[i].GetComponent<Image>().color = colorBloqueado;
-        }*/
+        }
     }
     /// <summary>
     /// Desbloquea un nivel dado un entero del 1 al 3
@@ -34,6 +34,7 @@ public class NivelSelector : MonoBehaviour
         boton.GetComponent<Image>().color = colorDesbloqueado;
     }
 
+    
  public void VolverDesdeCarrera()
 {
     Debug.Log("Volviendo a selector de niveles");
