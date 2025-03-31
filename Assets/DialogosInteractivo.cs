@@ -24,62 +24,66 @@ public class DialogoInteractivo : MonoBehaviour
     [SerializeField] private PersistencyManager persistencyManager;
 
         void OnEnable()
+    {
+        // 🔁 Ocultar todos los diálogos por si acaso
+        foreach (GameObject d in dialogos) d.SetActive(false);
+        foreach (GameObject d in dialogosFinales) d.SetActive(false);
+        foreach (GameObject d in dialogosFallo) d.SetActive(false);
+
+        // ✅ Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
+        if (persistencyManager.desbloqueoPendiente)
         {
-            // 🔁 Ocultar todos los diálogos por si acaso
-            foreach (GameObject d in dialogos) d.SetActive(false);
-            foreach (GameObject d in dialogosFinales) d.SetActive(false);
-            foreach (GameObject d in dialogosFallo) d.SetActive(false);
+            persistencyManager.SetDesbloqueoPendiente(false); // lo consumes
 
-
-            // ✅ Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
-            if (persistencyManager.desbloqueoPendiente)
+            if (persistencyManager.acertoTodo)
             {
-                persistencyManager.SetDesbloqueoPendiente(false); // lo consumes
-
-                if (persistencyManager.acertoTodo)
-                {
-                    mostrandoFinal = true;
-                    MostrarDialogoFinal();
-                }
-                else
-                {
-                    mostrandoFallo = true;
-                    
-                    MostrarDialogoFallo();
-                }
-            }
-        // ✅ Diálogo normal inicial (si nunca se ha mostrado antes)
-            if (!persistencyManager.selectorDialogue && dialogos.Length > 0)
-            {
-                dialogos[0].SetActive(true);
-                globoTexto.SetActive(true);
-                indice = 1;
+                mostrandoFinal = true;
+                MostrarDialogoFinal();
             }
             else
             {
-                nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
-            Debug.Log("Desbloqueando nivel " + persistencyManager.nivelActual);
+                mostrandoFallo = true;
+                MostrarDialogoFallo();
+            }
 
+            return; // 🔁 Muy importante: no continuar mostrando más cosas
+        }
+
+        // ✅ Diálogo normal inicial (si nunca se ha mostrado antes)
+        if (!persistencyManager.selectorDialogue && dialogos.Length > 0)
+        {
+            dialogos[0].SetActive(true);
+            globoTexto.SetActive(true);
+            indice = 1;
+        }
+        else
+        {
+            nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
+            Debug.Log("Desbloqueando nivel " + persistencyManager.nivelActual);
         }
     }
 
 
 
-   void Update()
-{
-        if (!persistencyManager.selectorDialogue)
+
+        void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {
                 if (mostrandoFinal)
+                {
                     MostrarSiguienteFinal();
+                }
                 else if (mostrandoFallo)
+                {
                     MostrarSiguienteFallo();
-                else
+                }
+                else if (!persistencyManager.selectorDialogue)
+                {
                     MostrarSiguiente();
+                }
             }
         }
-}
 
 
     void MostrarSiguienteFinal()

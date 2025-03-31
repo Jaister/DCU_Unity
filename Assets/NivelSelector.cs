@@ -37,22 +37,30 @@ public class NivelSelector : MonoBehaviour
     }
 
     
- public void VolverDesdeCarrera()
-{
-    Debug.Log("Volviendo a selector de niveles");
-
-    if (pantallaJuego != null)
+    public void VolverDesdeCarrera()
     {
-        pantallaJuego.SetActive(false);
-        Debug.Log("Pantalla de juego ocultada");
-    }
+        Debug.Log("Volviendo a selector de niveles");
 
-    if (pantallaActual != null)
-    {
-        pantallaActual.SetActive(true);
-        Debug.Log("Pantalla de niveles activada");
+        if (pantallaJuego != null)
+        {
+            // 🔁 Reiniciamos el script del juego
+            JuegoMatematicas juego = pantallaJuego.GetComponent<JuegoMatematicas>();
+            if (juego != null)
+            {
+                juego.enabled = false;
+                juego.enabled = true; // Esto asegura que se llame a OnEnable()
+            }
+
+            pantallaJuego.SetActive(false);
+            Debug.Log("Pantalla de juego ocultada");
+        }
+
+        if (pantallaActual != null)
+        {
+            pantallaActual.SetActive(true);
+            Debug.Log("Pantalla de niveles activada");
+        }
     }
-}
 
 
 }

@@ -38,6 +38,14 @@ public class JuegoMatematicas : MonoBehaviour
     [SerializeField] private GameObject NivelSelector;
     [SerializeField] private DialogoConBotones dialogoConBotones;
 
+    void OnEnable()
+{
+    ReiniciarJuego();
+    GenerarNuevaCuenta(); // 👈 Muy importante llamar esto aquí también
+}
+
+
+
     void Awake()
     {
         // Ocultar todo al principio
@@ -45,13 +53,6 @@ public class JuegoMatematicas : MonoBehaviour
             contenedorCuentas.SetActive(false);
     }
 
-    void Start()
-    {
-        // Mostrar el contenido cuando empieza realmente
-        if (contenedorCuentas != null)
-            contenedorCuentas.SetActive(true);
-        GenerarNuevaCuenta();
-    }
 
     void GenerarNuevaCuenta()
     {
@@ -188,6 +189,33 @@ public class JuegoMatematicas : MonoBehaviour
         dialogo.enabled = true;
     }
     }
+
+   void ReiniciarJuego()
+    {
+        cuentasResueltas = 0;
+        aciertosSinFallo = 0;
+        falloEnEstaCuenta = false;
+
+        // Restaurar progreso visual
+        if (progress != null)
+            progress.text = "0/" + totalCuentas;
+
+        // Mostrar contenedor si estaba oculto
+        if (contenedorCuentas != null)
+            contenedorCuentas.SetActive(true);
+
+        // Reactivar los botones por si acaso
+        foreach (Button btn in botonesRespuesta)
+        {
+            btn.gameObject.SetActive(true);
+            btn.interactable = true;
+            btn.GetComponent<Image>().color = colorDefault;
+        }
+
+        Debug.Log("Juego reiniciado");
+    }
+
+
 
     
 
