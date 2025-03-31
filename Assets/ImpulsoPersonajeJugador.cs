@@ -17,10 +17,13 @@ public class ImpulsoPersonajeJugador : MonoBehaviour
     public string personajeJugador = "";
     private void Start()
     {
-        desplazamiento = 530f / juego.totalCuentas;
         startPosGato = botonGato.anchoredPosition;
         startPosZorro = botonZorro.anchoredPosition;
         startPosPerezoso = botonPerezoso.anchoredPosition;
+    }
+    private void OnEnable()
+    {
+        desplazamiento = 530f / juego.totalCuentas;
     }
     public void DarImpulso()
     {
@@ -53,12 +56,8 @@ public class ImpulsoPersonajeJugador : MonoBehaviour
     }
     public void ResetPosition()
     {
-        Debug.Log("ResetPosition");
-
         botonGato.anchoredPosition = startPosGato;
         botonZorro.anchoredPosition = startPosZorro;
         botonPerezoso.anchoredPosition = startPosPerezoso;
-
-        Debug.Log(botonGato.anchoredPosition + "  " + botonZorro.anchoredPosition + "  " + botonPerezoso.anchoredPosition);
     }
 }

@@ -33,7 +33,7 @@ public class SelectorDePersonaje : MonoBehaviour
 
     [SerializeField] private JuegoMatematicas juegoMatematicas;
     [SerializeField] private GameObject juegoMatesGO;
-    private bool haMostradoMensajeCentral = false;
+    public bool haMostradoMensajeCentral = false;
     public bool haElegido = false;
 
     [SerializeField] private PersistencyManager persistencyManager;
@@ -67,7 +67,7 @@ public class SelectorDePersonaje : MonoBehaviour
 
     void Update()
     {
-        if (!haMostradoMensajeCentral && Input.GetMouseButtonDown(0))
+        if (!haMostradoMensajeCentral)
         {
             MostrarMensajeCentral();
         }

@@ -41,8 +41,7 @@ public class JuegoMatematicas : MonoBehaviour
 
     void OnEnable()
 {
-    ReiniciarJuego();
-    GenerarNuevaCuenta(); // 👈 Muy importante llamar esto aquí también
+        GenerarNuevaCuenta(); // 👈 Muy importante llamar esto aquí también
 }
 
 
@@ -189,6 +188,7 @@ public class JuegoMatematicas : MonoBehaviour
         dialogo.enabled = false;
         dialogo.enabled = true;
     }
+        ReiniciarJuego();
     }
 
    public void ReiniciarJuego()
@@ -200,6 +200,7 @@ public class JuegoMatematicas : MonoBehaviour
         impulsoPersonajeJugador.personajeJugador = "";
         impulsoPersonajeJugador.ResetPosition();
         selectorDePersonaje.haElegido = false;
+        selectorDePersonaje.haMostradoMensajeCentral = false;
         // Restaurar progreso visual
         if (progress != null)
             progress.text = "0/" + totalCuentas;
