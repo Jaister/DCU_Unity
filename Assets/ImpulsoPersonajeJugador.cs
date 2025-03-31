@@ -12,12 +12,15 @@ public class ImpulsoPersonajeJugador : MonoBehaviour
     [Header("Configuración de impulso")]
     public float desplazamiento; // Desplazamiento en píxeles calculado al centro de la pantalla
     public float duracionDeslizamiento = 0.3f; // Duración del impulso suave
-
+    private Vector2 startPosGato, startPosZorro, startPosPerezoso;
     [Header("Personaje jugador")]
     public string personajeJugador = "";
     private void Start()
     {
         desplazamiento = 530f / juego.totalCuentas;
+        startPosGato = botonGato.anchoredPosition;
+        startPosZorro = botonZorro.anchoredPosition;
+        startPosPerezoso = botonPerezoso.anchoredPosition;
     }
     public void DarImpulso()
     {
@@ -47,5 +50,15 @@ public class ImpulsoPersonajeJugador : MonoBehaviour
         }
 
         objetivo.anchoredPosition = destino;
+    }
+    public void ResetPosition()
+    {
+        Debug.Log("ResetPosition");
+
+        botonGato.anchoredPosition = startPosGato;
+        botonZorro.anchoredPosition = startPosZorro;
+        botonPerezoso.anchoredPosition = startPosPerezoso;
+
+        Debug.Log(botonGato.anchoredPosition + "  " + botonZorro.anchoredPosition + "  " + botonPerezoso.anchoredPosition);
     }
 }

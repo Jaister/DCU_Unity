@@ -34,13 +34,14 @@ public class SelectorDePersonaje : MonoBehaviour
     [SerializeField] private JuegoMatematicas juegoMatematicas;
     [SerializeField] private GameObject juegoMatesGO;
     private bool haMostradoMensajeCentral = false;
-    private bool haElegido = false;
+    public bool haElegido = false;
 
     [SerializeField] private PersistencyManager persistencyManager;
     [SerializeField] private TMP_Text progress;
     [SerializeField] private Animator ZorroAnimator;
     [SerializeField] private Animator GatoAnimator;
     [SerializeField] private Animator PerezosoAnimator;
+    [SerializeField] private ImpulsoPersonajeJugador impulsoPersonajeJugador;
 
     void Start()
     {
@@ -101,6 +102,7 @@ public class SelectorDePersonaje : MonoBehaviour
             textoBajoZorro.SetActive(true);
             textoBajoZorro.GetComponent<TMP_Text>().text = persistencyManager.playerName;
             ZorroAnimator.SetBool("Selected", true);
+
             FinalizarSeleccion();
         }
     }
@@ -113,6 +115,7 @@ public class SelectorDePersonaje : MonoBehaviour
             textoBajoPerezoso.SetActive(true);
             textoBajoPerezoso.GetComponent<TMP_Text>().text = persistencyManager.playerName;
             PerezosoAnimator.SetBool("Selected", true);
+
             FinalizarSeleccion();
         }
     }
@@ -121,6 +124,7 @@ public class SelectorDePersonaje : MonoBehaviour
     {
         haElegido = true;
         mensajeCentral?.SetActive(false);
+        impulsoPersonajeJugador.personajeJugador = personajeSeleccionado;
         Debug.Log("Personaje elegido: " + personajeSeleccionado);
         juegoMatesGO.SetActive(true);
 

@@ -581,7 +581,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &94176395
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1385,6 +1385,7 @@ MonoBehaviour:
   juegoGO: {fileID: 501706328}
   NivelSelector: {fileID: 736641687}
   dialogoConBotones: {fileID: 1500468779}
+  impulsoPersonajeJugador: {fileID: 106665851}
 --- !u!1 &175120084
 GameObject:
   m_ObjectHideFlags: 0
@@ -5218,15 +5219,15 @@ RectTransform:
   - {fileID: 1634834618}
   - {fileID: 1012638449}
   - {fileID: 198371074}
-  - {fileID: 1141136773}
   - {fileID: 442545739}
   - {fileID: 474565093}
   - {fileID: 108611463}
   - {fileID: 775456828}
-  - {fileID: 149416547}
   - {fileID: 1766069525}
   - {fileID: 94176395}
   - {fileID: 1799611892}
+  - {fileID: 1141136773}
+  - {fileID: 149416547}
   - {fileID: 673994692}
   - {fileID: 106665850}
   m_Father: {fileID: 0}
@@ -10062,11 +10063,13 @@ MonoBehaviour:
   personajeSeleccionado: 
   juegoMatematicas: {fileID: 149416548}
   juegoMatesGO: {fileID: 149416546}
+  haElegido: 0
   persistencyManager: {fileID: 1822762593}
   progress: {fileID: 736039040}
   ZorroAnimator: {fileID: 442545743}
   GatoAnimator: {fileID: 108611467}
   PerezosoAnimator: {fileID: 474565097}
+  impulsoPersonajeJugador: {fileID: 106665851}
 --- !u!1 &1144704374
 GameObject:
   m_ObjectHideFlags: 0
@@ -11111,6 +11114,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1500468779}
         m_TargetAssemblyTypeName: DialogoConBotones, Assembly-CSharp
         m_MethodName: ResetDialogo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 149416548}
+        m_TargetAssemblyTypeName: JuegoMatematicas, Assembly-CSharp
+        m_MethodName: ReiniciarJuego
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14856,7 +14871,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1766069525
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15449,7 +15464,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1799611892
 RectTransform:
   m_ObjectHideFlags: 0

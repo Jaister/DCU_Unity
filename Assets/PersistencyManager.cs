@@ -24,7 +24,7 @@ public class PersistencyManager : MonoBehaviour
 
    void Start()
     {
-        ResetData();
+        //ResetData();
         LoadData(); // No resetear al arrancar
         starsOutput.text = $"Tienes {stars} estrellas {playerName}!!";
     }

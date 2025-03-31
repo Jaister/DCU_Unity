@@ -37,6 +37,7 @@ public class JuegoMatematicas : MonoBehaviour
     [SerializeField] private GameObject juegoGO;
     [SerializeField] private GameObject NivelSelector;
     [SerializeField] private DialogoConBotones dialogoConBotones;
+    [SerializeField] private ImpulsoPersonajeJugador impulsoPersonajeJugador;
 
     void OnEnable()
 {
@@ -190,12 +191,15 @@ public class JuegoMatematicas : MonoBehaviour
     }
     }
 
-   void ReiniciarJuego()
+   public void ReiniciarJuego()
     {
         cuentasResueltas = 0;
         aciertosSinFallo = 0;
         falloEnEstaCuenta = false;
 
+        impulsoPersonajeJugador.personajeJugador = "";
+        impulsoPersonajeJugador.ResetPosition();
+        selectorDePersonaje.haElegido = false;
         // Restaurar progreso visual
         if (progress != null)
             progress.text = "0/" + totalCuentas;
@@ -207,7 +211,7 @@ public class JuegoMatematicas : MonoBehaviour
         // Reactivar los botones por si acaso
         foreach (Button btn in botonesRespuesta)
         {
-            btn.gameObject.SetActive(true);
+            btn.gameObject.SetActive(false); 
             btn.interactable = true;
             btn.GetComponent<Image>().color = colorDefault;
         }
