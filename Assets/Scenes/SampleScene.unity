@@ -3862,6 +3862,8 @@ MonoBehaviour:
   Operation: {fileID: 1883646161}
   persistencyManager: {fileID: 1822762593}
   progress: {fileID: 428234580}
+  moveSpeed: 5
+  fadeSpeed: 2
 --- !u!222 &402217722
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4928,7 +4930,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!225 &498982684
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6658,7 +6660,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!225 &636460123
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10063,6 +10065,7 @@ MonoBehaviour:
   personajeSeleccionado: 
   juegoMatematicas: {fileID: 149416548}
   juegoMatesGO: {fileID: 149416546}
+  haMostradoMensajeCentral: 0
   haElegido: 0
   persistencyManager: {fileID: 1822762593}
   progress: {fileID: 736039040}
