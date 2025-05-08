@@ -8,8 +8,11 @@ public class Game3 : MonoBehaviour
     [SerializeField] private TextMeshProUGUI OperationText;
     [SerializeField] private GameObject[] Options;
     [SerializeField] private PersistencyManager persistencyManager;
+    [SerializeField] private GameObject progressText;
+    private int GOAL = 10;
 
-    private int correctAnswer, correctOptionIndex;
+    private int correctAnswer, correctOptionIndex, progress;
+
 
     // Start is called before the first frame update
     void Start()
@@ -18,6 +21,7 @@ public class Game3 : MonoBehaviour
     }
     private void OnEnable()
     {
+        progressText.GetComponent<TextMeshProUGUI>().text = $"{progress}/{GOAL}";
         GenerateOperation();
         GenerateOptions();
     }
@@ -74,21 +78,29 @@ public class Game3 : MonoBehaviour
     }
     public void CheckAnswer(int selectedOption)
     {
+
         // Comprobar si la respuesta es correcta
         if (selectedOption == correctOptionIndex)
         {
+            if (progress + 1 == GOAL)
+            {
+                progressText.GetComponent<TextMeshProUGUI>().text = "¡Has ganado!";
+                //GESTIONAR LA VICTORIA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                return;
+            }
             // Respuesta correcta
             Debug.Log("Correcto!");
             GenerateOperation();
             GenerateOptions();
             persistencyManager.AddStars();
             persistencyManager.UpdateStarsText();
+            progress++;
+            progressText.GetComponent<TextMeshProUGUI>().text = $"{progress}/{GOAL}";
         }
         else
         {
             // Respuesta incorrecta
             Debug.Log("Incorrecto!");
-            // Aquí puedes añadir lógica para lo que sucede al fallar
         }
     }
     private void OnDisable()
@@ -98,5 +110,6 @@ public class Game3 : MonoBehaviour
         {
             OperationText.text = "OPERACION";
         }
+        progress = 0;
     }
 }

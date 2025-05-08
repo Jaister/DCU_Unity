@@ -16604,7 +16604,31 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1772237986}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 16810416}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 736641687}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1772237986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17489,6 +17513,8 @@ MonoBehaviour:
   - {fileID: 1170421694}
   - {fileID: 1090904226}
   persistencyManager: {fileID: 1822762593}
+  progressText: {fileID: 1999080603}
+  GOAL: 10
 --- !u!1 &1869363122
 GameObject:
   m_ObjectHideFlags: 0
