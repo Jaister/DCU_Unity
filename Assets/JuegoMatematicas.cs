@@ -38,10 +38,11 @@ public class JuegoMatematicas : MonoBehaviour
     [SerializeField] private GameObject NivelSelector;
     [SerializeField] private DialogoConBotones dialogoConBotones;
     [SerializeField] private ImpulsoPersonajeJugador impulsoPersonajeJugador;
+    [SerializeField] private SoundBank soundBank;
 
     void OnEnable()
 {
-        GenerarNuevaCuenta(); // 👈 Muy importante llamar esto aquí también
+        GenerarNuevaCuenta(); //Muy importante llamar esto aquí también
 }
 
 
@@ -56,7 +57,7 @@ public class JuegoMatematicas : MonoBehaviour
 
     void GenerarNuevaCuenta()
     {
-        // ✅ Reiniciamos el flag de fallo
+        //Reiniciamos el flag de fallo
         falloEnEstaCuenta = false;
 
         if (cuentasResueltas >= totalCuentas)
@@ -110,13 +111,14 @@ public class JuegoMatematicas : MonoBehaviour
 
         if (seleccion == respuestaCorrecta)
         {
+            soundBank.PlaySound("CORRECT");
             boton.GetComponent<Image>().color = colorCorrecto;
             textoCuenta.text = "Correcto!";
             FindObjectOfType<ImpulsoPersonajeJugador>()?.DarImpulso();
 
             if (!falloEnEstaCuenta)
             {
-                aciertosSinFallo++; // ✅ Contamos solo si acierta a la primera
+                aciertosSinFallo++; // Contamos solo si acierta a la primera
                 persistencyManager.AddStars();
             }
 
@@ -129,7 +131,9 @@ public class JuegoMatematicas : MonoBehaviour
 
         else
         {
-            falloEnEstaCuenta = true; // ❌ Marcamos que ha fallado en esta cuenta
+            soundBank.PlaySound("WRONG");
+
+            falloEnEstaCuenta = true; //Marcamos que ha fallado en esta cuenta
             boton.GetComponent<Image>().color = colorIncorrecto;
             textoCuenta.text = "Incorrecto, inténtalo de nuevo";
             Invoke(nameof(RepetirMismaCuenta), 1.5f);
@@ -181,7 +185,7 @@ public class JuegoMatematicas : MonoBehaviour
     NivelSelector.SetActive(true);
     juegoGO.SetActive(false);
 
-    // 🧠 Reiniciamos el diálogo interactivo
+    //Reiniciamos el diálogo interactivo
     DialogoInteractivo dialogo = FindObjectOfType<DialogoInteractivo>();
     if (dialogo != null)
     {

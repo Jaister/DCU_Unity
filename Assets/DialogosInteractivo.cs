@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DialogoInteractivo : MonoBehaviour
 {
     public GameObject[] dialogos;
     public GameObject globoTexto;
+
     private int indice = 0;
 
     [Header("Referencia al script de niveles")]
@@ -23,14 +25,14 @@ public class DialogoInteractivo : MonoBehaviour
 
     [SerializeField] private PersistencyManager persistencyManager;
 
-        void OnEnable()
+    void OnEnable()
     {
-        // 🔁 Ocultar todos los diálogos por si acaso
+        // Ocultar todos los diálogos por si acaso
         foreach (GameObject d in dialogos) d.SetActive(false);
         foreach (GameObject d in dialogosFinales) d.SetActive(false);
         foreach (GameObject d in dialogosFallo) d.SetActive(false);
 
-        // ✅ Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
+        // Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
         if (persistencyManager.desbloqueoPendiente)
         {
             persistencyManager.SetDesbloqueoPendiente(false); // lo consumes
@@ -46,10 +48,10 @@ public class DialogoInteractivo : MonoBehaviour
                 MostrarDialogoFallo();
             }
 
-            return; // 🔁 Muy importante: no continuar mostrando más cosas
+            return; // Muy importante: no continuar mostrando más cosas
         }
 
-        // ✅ Diálogo normal inicial (si nunca se ha mostrado antes)
+        // Diálogo normal inicial (si nunca se ha mostrado antes)
         if (!persistencyManager.selectorDialogue && dialogos.Length > 0)
         {
             dialogos[0].SetActive(true);
@@ -61,6 +63,8 @@ public class DialogoInteractivo : MonoBehaviour
             nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
             Debug.Log("Desbloqueando nivel " + persistencyManager.nivelActual);
         }
+
+        //HACER QUE LA NAVE SE ACTIVE AL LLEGAR AL NIVEL 4
     }
 
 
@@ -85,7 +89,6 @@ public class DialogoInteractivo : MonoBehaviour
             }
         }
 
-
     void MostrarSiguienteFinal()
     {
         if (indiceFinal < dialogosFinales.Length)
@@ -102,19 +105,18 @@ public class DialogoInteractivo : MonoBehaviour
 
             Debug.Log("Fin del diálogo final.");
 
-            // ✅ Desbloquear nivel 2
+            // Desbloquear nivel 2
             if (nivelSelector != null)
             {
                 nivelSelector.DesbloquearNivel(2);
                 persistencyManager.SetNivelActual(2);
             }
 
-            // ✅ Limpiar el flag para que no se repita
+            // Limpiar el flag para que no se repita
             persistencyManager.acertoTodo = false;
         }
 
     }
-
 
     void MostrarSiguiente()
 {

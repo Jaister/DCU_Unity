@@ -13,9 +13,12 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private GameObject PlayerPrefab;
     [SerializeField] private GameObject Operation;
-    [SerializeField] private PersistencyManager persistencyManager; // Reference to the persistency manager
+    [SerializeField] private PersistencyManager persistencyManager; 
+    [SerializeField] private GameObject selectorNivel; 
     [SerializeField] private TMP_Text progress;
     [SerializeField] private float fadeSpeed = 2f; // Speed of tile fading
+    [SerializeField] private SoundBank soundBank; // Reference to the sound bank
+    [SerializeField] private NivelSelector selectorScript; // Reference to the character selector
 
     //Tile dict
     private Dictionary<Vector2, Tile> tileDict = new Dictionary<Vector2, Tile>();
@@ -25,9 +28,18 @@ public class GridManager : MonoBehaviour
     private int winCondition = 10;
     private int winCount = 0;
     private Tile currentTile; // Reference to the current tile player is on
+    private Coroutine changeTextCoroutine;
+    private string trueOriginalText; // Always holds the real original text
 
     void Start()
     {
+    }
+
+    private void OnEnable()
+    {
+        // Ensure clean state
+        CleanupGrid();
+
         // Deactivate player initially
         PlayerPrefab.SetActive(false);
         GenerateGrid();
@@ -38,17 +50,59 @@ public class GridManager : MonoBehaviour
         //Generate first operation
     }
 
+    private void OnDisable()
+    {
+        // Reset the grid and player when the game is disabled
+        CleanupGrid();
+    }
+
+    private void CleanupGrid()
+    {
+        // Cancel any ongoing coroutines
+        if (changeTextCoroutine != null)
+        {
+            StopCoroutine(changeTextCoroutine);
+            changeTextCoroutine = null;
+        }
+
+        // Cleanup player state
+        PlayerPrefab.SetActive(false);
+        currentTile = null;
+        winCount = 0;
+        progress.text = $"{winCount}/{winCondition}";
+        Operation.GetComponent<TMP_Text>().text = "OPERACION";
+
+        // Safely destroy all tiles
+        List<Tile> tilesToDestroy = new List<Tile>(tileDict.Values);
+        foreach (var tile in tilesToDestroy)
+        {
+            if (tile != null)
+            {
+                Destroy(tile.gameObject);
+            }
+        }
+
+        // Clear dictionary after destroying tiles
+        tileDict.Clear();
+    }
+
     public void CheckResult(int result)
     {
         TMP_Text Text = Operation.GetComponent<TMP_Text>();
-        
+        if (winCount+1 == winCondition)
+        {
+            progress.text = "¡Has ganado!";
+
+            Win();
+            return;
+        }
         if (result == correctResult)
         {
             // Find the tile with the correct result
             Tile correctTile = null;
             foreach (var tile in tileDict.Values)
             {
-                if (tile.Value == result)
+                if (tile != null && tile.Value == result)
                 {
                     correctTile = tile;
                     break;
@@ -57,6 +111,8 @@ public class GridManager : MonoBehaviour
 
             if (correctTile != null)
             {
+                // Play sound for correct answer
+                soundBank.PlaySound("CORRECT");
                 // Start the movement animation
                 StartCoroutine(MovePlayerToTile(correctTile));
 
@@ -67,7 +123,7 @@ public class GridManager : MonoBehaviour
                 }
 
                 // Update current tile reference
-                
+
                 currentTile = correctTile;
             }
 
@@ -87,14 +143,26 @@ public class GridManager : MonoBehaviour
         else
         {
             //GEStion resultado incorrecto
+            Debug.Log("Incorrecto!");
+            soundBank.PlaySound("WRONG");
             StartChangeOperationText("Incorrecto!", Text);
         }
     }
+    void Win()
+    {
+        // CAMBIAR PARA NS QUE HAGA LO QUE QUEREMOS AL GANAR
+        //SI HAY QUE PONER ALGUNA RETROALIMENTACION PONER CORRUTINA PARA ESTO:
+        selectorNivel.SetActive(true);
+        selectorScript.DesbloquearNivel(3);
+        persistencyManager.SetNivelActual(3);
+
+
+        transform.parent.gameObject.SetActive(false);
+
+    }
+
     //GESTION DE CAMBIO DE TEXTO AL FALLAR
     //---------------------------------------------------//
-    private Coroutine changeTextCoroutine;
-    private string trueOriginalText; // Always holds the real original text
-
     private IEnumerator ChangeOperationTextCoroutine(string newText, TMP_Text texto)
     {
         texto.text = newText;
@@ -116,12 +184,10 @@ public class GridManager : MonoBehaviour
         changeTextCoroutine = StartCoroutine(ChangeOperationTextCoroutine(newText, texto));
     }
 
-
     //---------------------------------------------------//
 
-
-// Coroutine to animate player movement
-private IEnumerator MovePlayerToTile(Tile targetTile)
+    // Coroutine to animate player movement
+    private IEnumerator MovePlayerToTile(Tile targetTile)
     {
         Vector3 startPosition = PlayerPrefab.transform.position;
         Vector3 targetPosition = new Vector3(
@@ -154,14 +220,27 @@ private IEnumerator MovePlayerToTile(Tile targetTile)
     // Coroutine to fade out a tile
     private IEnumerator FadeTile(Tile tile)
     {
+        if (tile == null) yield break;
+
         // Remove tile immediately from dictionary
-        Vector2 tilePosition = new Vector2(tile.transform.position.x, tile.transform.position.y);
-        if (tileDict.ContainsKey(tilePosition))
+        Vector2? keyToRemove = null;
+        foreach (var entry in tileDict)
         {
-            tileDict.Remove(tilePosition);
+            if (entry.Value == tile)
+            {
+                keyToRemove = entry.Key;
+                break;
+            }
+        }
+
+        if (keyToRemove.HasValue && tileDict.ContainsKey(keyToRemove.Value))
+        {
+            tileDict.Remove(keyToRemove.Value);
         }
 
         SpriteRenderer spriteRenderer = tile.GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null) yield break;
+
         Color originalColor = spriteRenderer.color;
         float alpha = originalColor.a;
 
@@ -187,11 +266,10 @@ private IEnumerator MovePlayerToTile(Tile targetTile)
         Destroy(tile.gameObject);
     }
 
-
     string GenerateOperation()
     {
-        int num1 = Random.Range(0, 10);
-        int num2 = Random.Range(0, 10);
+        int num1 = Random.Range(1, 10);
+        int num2 = Random.Range(1, 10);
         correctResult = num1 + num2; // Store correct result
 
         string operation = $"{num1} + {num2}";
@@ -249,8 +327,8 @@ private IEnumerator MovePlayerToTile(Tile targetTile)
                 {
                     firstTile = tile.transform;
                 }
-                //Add to the dict
-                tileDict.Add(new Vector2(x, y), tile);
+                //Add to the dict - use grid coordinates as key
+                tileDict[new Vector2(x, y)] = tile;
             }
         }
         currentTile = tileDict[new Vector2(0, 0)];
@@ -289,7 +367,6 @@ private IEnumerator MovePlayerToTile(Tile targetTile)
             .Where(tile => tile != null && tile != currentTile)
             .ToList();
 
-
         // Ensure there are enough tiles to fill
         if (availableTiles.Count < maxTiles) return;
 
@@ -313,7 +390,7 @@ private IEnumerator MovePlayerToTile(Tile targetTile)
             int number;
             do
             {
-                number = Random.Range(0, 20);
+                number = Random.Range(1, 20);
             }
             while (number == correctResult); // Avoid duplicate correct result
 
@@ -323,10 +400,16 @@ private IEnumerator MovePlayerToTile(Tile targetTile)
         // Make sure all other tiles remain empty (-1)
         foreach (Tile tile in tileDict.Values.Except(selectedTiles))
         {
-            tile.changeValue(-1);
+            if (tile != null)
+            {
+                tile.changeValue(-1);
+            }
         }
-        currentTile.changeValue(-1);
 
+        // Ensure current tile is empty
+        if (currentTile != null)
+        {
+            currentTile.changeValue(-1);
+        }
     }
-
 }

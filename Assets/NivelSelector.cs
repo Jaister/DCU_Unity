@@ -12,7 +12,12 @@ public class NivelSelector : MonoBehaviour
     [Header("Pantallas")]
     public GameObject pantallaActual;       // Pantalla del selector de niveles
     public GameObject pantallaJuego;        // Pantalla del nivel 1 (juego)
-    [SerializeField]private List<GameObject> pantallasNiveles = new List<GameObject>(); 
+    [SerializeField]private List<GameObject> pantallasNiveles = new List<GameObject>();
+    [SerializeField]private PersistencyManager persistencyManager;
+    [SerializeField] private Sprite buttonsDif1;
+    [SerializeField] private Sprite buttonsDif2;
+    [SerializeField] private Image[] buttonsimages;
+    [SerializeField] private GameObject[] planets;
 
     void Start()
     {
@@ -35,15 +40,51 @@ public class NivelSelector : MonoBehaviour
             botonesNiveles[i].GetComponent<Image>().color = Color.white;
         }
     }
+    public void ChangeButtonImages()
+    {
+        for (int i = 0; i < buttonsimages.Length; i++)
+        {
+            if (persistencyManager.dificultadActual == 1)
+            {
+                buttonsimages[i].sprite = buttonsDif2;
+            }
+            else if (persistencyManager.dificultadActual == 2)
+            {
+                buttonsimages[i].sprite = buttonsDif1;
+            }
+        }
+    }
+    public void ChangePlanetImages()
+    {
 
-    
+        for (int i = 0; i < planets.Length; i++)
+        {
+            if (persistencyManager.dificultadActual == 1)
+            {
+                planets[0].SetActive(false);
+                planets[1].SetActive(true);
+            }
+            else if (persistencyManager.dificultadActual == 2)
+            {
+                planets[0].SetActive(true);
+                planets[1].SetActive(false);
+            }
+        }
+    }
+    public void CHangeDifficulty()
+    {
+        ChangeButtonImages();
+        ChangePlanetImages();
+
+        persistencyManager.dificultadActual = persistencyManager.dificultadActual == 1 ? 2 : 1;
+        }
     public void VolverDesdeCarrera()
     {
         Debug.Log("Volviendo a selector de niveles");
 
         if (pantallaJuego != null)
         {
-            // 🔁 Reiniciamos el script del juego
+            // Reiniciamos el script del juego
             JuegoMatematicas juego = pantallaJuego.GetComponent<JuegoMatematicas>();
             if (juego != null)
             {

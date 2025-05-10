@@ -8,6 +8,7 @@ public class PersistencyManager : MonoBehaviour
     public bool selectorDialogue;
     public bool acertoTodo = false;
     public int nivelActual = 1;
+    public int dificultadActual = 1; // 1: Facil, 2: Normal, 3:YA VEREMOS....
 
 
     [SerializeField] private TMP_InputField playerNameInput;
@@ -74,7 +75,6 @@ public class PersistencyManager : MonoBehaviour
 
         if (PlayerPrefs.HasKey("AcertoTodo"))
             acertoTodo = PlayerPrefs.GetInt("AcertoTodo") == 1;
-
         Debug.Log($"Loaded Data -> Stars: {stars}, PlayerName: {playerName}, SelectorDialogue: {selectorDialogue}, AcertoTodo: {acertoTodo}");
     }
 
@@ -98,6 +98,11 @@ public class PersistencyManager : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Selector dialogue complete!");
 
+    }
+    public void UnlockDifficulty2()
+    {
+        PlayerPrefs.SetInt("UnlockDifficulty2", 1);
+        PlayerPrefs.Save();
     }
     public void SetNivelActual(int nivel)
     {
