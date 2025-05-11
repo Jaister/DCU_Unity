@@ -38,27 +38,40 @@ public class Game3 : MonoBehaviour
     }
     void GenerateOperation()
     {
-        int num1 = Random.Range(1, 10);
-        int num2 = Random.Range(1, 10);
-        int operation = 0; //CAMBIAR SI QUEREMOS DISTINTAS OPERACIONES
         string OperationString = "";
         //Habra que cambiar la cuenta ya que el numero que queremos no es el resultado si no uno de los operandos
         int result = 0;
-
-        switch (operation)
+        if (persistencyManager.dificultadActual == 2)
         {
-            case 0:
-                result = num1 + num2;
-                correctAnswer = num2;
-                OperationString = $"{num1} + ? = {result}";
-                OperationText.text = OperationString;
-                break;
-            case 1:
+            // Generar operación resta O multiplicación
+            int operacion = Random.Range(0, 2); // 0 para resta, 1 para multiplicación
+            if (operacion == 0)
+            {
+                // Generar operación de resta
+                int num1 = Random.Range(2, 20);
+                int num2 = Random.Range(1, num1); // Asegurarse de que B es menor que A
                 result = num1 - num2;
-                break;
-            case 2:
+                correctAnswer = num2; // Correct answer is the second operand
+                OperationString = $"{num1} - ? = {result}";
+            }
+            else
+            {
+                // Generar operación de multiplicación
+                int num1 = Random.Range(1, 10);
+                int num2 = Random.Range(1, 10);
                 result = num1 * num2;
-                break;
+                correctAnswer = num2; // Correct answer is the second operand
+                OperationString = $"{num1} x ? = {result}";
+            }
+        }
+        else
+        {
+            // Generar operación de suma
+            int num1 = Random.Range(1, 10);
+            int num2 = Random.Range(1, 10);
+            result = num1 + num2;
+            correctAnswer = num2; // Correct answer is the second operand
+            OperationString = $"{num1} + ? =  {result}";
         }
         if (changeTextCoroutine != null)
         {
@@ -141,8 +154,7 @@ public class Game3 : MonoBehaviour
         //SI HAY QUE PONER ALGUNA RETROALIMENTACION PONER CORRUTINA PARA ESTO:
         selectorNivel.SetActive(true);
         persistencyManager.UnlockDifficulty2();
-        persistencyManager.SetNivelActual(4);
-
+        selectorScript.UnlockDifficulty2();
         transform.parent.gameObject.SetActive(false);
 
     }

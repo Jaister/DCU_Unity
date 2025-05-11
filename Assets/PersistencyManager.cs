@@ -9,6 +9,8 @@ public class PersistencyManager : MonoBehaviour
     public bool acertoTodo = false;
     public int nivelActual = 1;
     public int dificultadActual = 1; // 1: Facil, 2: Normal, 3:YA VEREMOS....
+    [SerializeField] private bool resetData = false; // Para resetear los datos al iniciar el juego
+    [SerializeField] private bool fullGame;
 
 
     [SerializeField] private TMP_InputField playerNameInput;
@@ -25,8 +27,14 @@ public class PersistencyManager : MonoBehaviour
 
    void Start()
     {
-        //ResetData();
+        if (resetData) ResetData();
         LoadData(); // No resetear al arrancar
+        if (fullGame)
+        {
+            // Desbloquear el nivel 2 al iniciar el juego
+            dificultadActual = 2;
+            nivelActual = 3;
+        }
         starsOutput.text = $"Tienes {stars} estrellas {playerName}!!";
     }
 
@@ -75,6 +83,8 @@ public class PersistencyManager : MonoBehaviour
 
         if (PlayerPrefs.HasKey("AcertoTodo"))
             acertoTodo = PlayerPrefs.GetInt("AcertoTodo") == 1;
+        if (PlayerPrefs.HasKey("DificultadActual"))
+            dificultadActual = PlayerPrefs.GetInt("DificultadActual",1);
         Debug.Log($"Loaded Data -> Stars: {stars}, PlayerName: {playerName}, SelectorDialogue: {selectorDialogue}, AcertoTodo: {acertoTodo}");
     }
 
@@ -101,7 +111,7 @@ public class PersistencyManager : MonoBehaviour
     }
     public void UnlockDifficulty2()
     {
-        PlayerPrefs.SetInt("UnlockDifficulty2", 1);
+        PlayerPrefs.SetInt("DificultadActual", 2);
         PlayerPrefs.Save();
     }
     public void SetNivelActual(int nivel)

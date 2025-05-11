@@ -268,11 +268,46 @@ public class GridManager : MonoBehaviour
 
     string GenerateOperation()
     {
-        int num1 = Random.Range(1, 10);
-        int num2 = Random.Range(1, 10);
-        correctResult = num1 + num2; // Store correct result
-
-        string operation = $"{num1} + {num2}";
+        string OperationString = "";
+        //Habra que cambiar la cuenta ya que el numero que queremos no es el resultado si no uno de los operandos
+        int result = 0;
+        if (persistencyManager.dificultadActual == 2)
+        {
+            // Generar operación resta O multiplicación
+            int operacion = Random.Range(0, 2); // 0 para resta, 1 para multiplicación
+            if (operacion == 0)
+            {
+                // Generar operación de resta
+                int num1 = Random.Range(2, 20);
+                int num2 = Random.Range(1, num1); // Asegurarse de que B es menor que A
+                result = num1 - num2;
+                correctResult = num2; // Correct answer is the second operand
+                OperationString = $"{num1} - ? = {result}";
+            }
+            else
+            {
+                // Generar operación de multiplicación
+                int num1 = Random.Range(1, 10);
+                int num2 = Random.Range(1, 10);
+                result = num1 * num2;
+                correctResult = num2; // Correct answer is the second operand
+                OperationString = $"{num1} x ? = {result}";
+            }
+        }
+        else
+        {
+            // Generar operación de suma
+            int num1 = Random.Range(1, 10);
+            int num2 = Random.Range(1, 10);
+            result = num1 + num2;
+            correctResult = num2; // Correct answer is the second operand
+            OperationString = $"{num1} + ? =  {result}";
+        }
+        if (changeTextCoroutine != null)
+        {
+            StopCoroutine(changeTextCoroutine);
+            changeTextCoroutine = null;
+        }
         TMP_Text text = Operation.GetComponent<TMP_Text>();
 
         // Cancel any ongoing text revert when we generate new operation
@@ -281,11 +316,12 @@ public class GridManager : MonoBehaviour
             StopCoroutine(changeTextCoroutine);
             changeTextCoroutine = null;
         }
-        trueOriginalText = operation; // Update true original text here
+        trueOriginalText = OperationString; // Update true original text here
 
-        text.text = operation; // Update UI
+        text.text = OperationString; // Update UI
+        return OperationString;
 
-        return operation;
+
     }
 
     void GenerateGrid()

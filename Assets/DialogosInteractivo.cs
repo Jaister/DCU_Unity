@@ -63,14 +63,19 @@ public class DialogoInteractivo : MonoBehaviour
             nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
             Debug.Log("Desbloqueando nivel " + persistencyManager.nivelActual);
         }
+        if (persistencyManager.dificultadActual == 2)
+        {
+            nivelSelector.UnlockDifficulty2();
+            persistencyManager.dificultadActual = 1; // Cambia dificultad a 1 porque se cambia abajo xd
 
+            nivelSelector.ChangeDifficulty();
+
+        }
         //HACER QUE LA NAVE SE ACTIVE AL LLEGAR AL NIVEL 4
     }
 
 
-
-
-        void Update()
+    void Update()
         {
             if (Input.GetMouseButtonDown(0))
             {

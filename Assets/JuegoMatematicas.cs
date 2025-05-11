@@ -72,12 +72,35 @@ public class JuegoMatematicas : MonoBehaviour
             btn.interactable = true;
             btn.GetComponent<Image>().color = colorDefault;
         }
-
-        // Generar operación de suma
-        ultimoA = Random.Range(1, 10);
-        ultimoB = Random.Range(1, 10);
-        respuestaCorrecta = ultimoA + ultimoB;
-        textoCuenta.text = $"{ultimoA} + {ultimoB} = ?";
+        if (persistencyManager.dificultadActual == 2)
+        {
+            // Generar operación resta O multiplicación
+            int operacion = Random.Range(0, 2); // 0 para resta, 1 para multiplicación
+            if (operacion == 0)
+            {
+                // Generar operación de resta
+                ultimoA = Random.Range(2, 20);
+                ultimoB = Random.Range(1, ultimoA); // Asegurarse de que B es menor que A
+                respuestaCorrecta = ultimoA - ultimoB;
+                textoCuenta.text = $"{ultimoA} - {ultimoB} = ?";
+            }
+            else
+            {
+                // Generar operación de multiplicación
+                ultimoA = Random.Range(1, 10);
+                ultimoB = Random.Range(1, 10);
+                respuestaCorrecta = ultimoA * ultimoB;
+                textoCuenta.text = $"{ultimoA} x {ultimoB} = ?";
+            }
+        }
+        else
+        {
+            // Generar operación de suma
+            ultimoA = Random.Range(1, 10);
+            ultimoB = Random.Range(1, 10);
+            respuestaCorrecta = ultimoA + ultimoB;
+            textoCuenta.text = $"{ultimoA} + {ultimoB} = ?";
+        }
 
         // Generar respuestas (1 correcta + 2 incorrectas únicas)
         List<int> opciones = new List<int> { respuestaCorrecta };

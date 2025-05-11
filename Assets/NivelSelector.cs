@@ -18,6 +18,7 @@ public class NivelSelector : MonoBehaviour
     [SerializeField] private Sprite buttonsDif2;
     [SerializeField] private Image[] buttonsimages;
     [SerializeField] private GameObject[] planets;
+    [SerializeField] private Button ShipButton;
 
     void Start()
     {
@@ -27,18 +28,26 @@ public class NivelSelector : MonoBehaviour
             botonesNiveles[i].interactable = false;
             botonesNiveles[i].GetComponent<Image>().color = colorBloqueado;
         }
+
     }
+
     /// <summary>
     /// Desbloquea un nivel dado un entero del 1 al 3
     /// </summary>
     /// <param name="nivel"></param>
     public void DesbloquearNivel(int nivel)
     {
+
         for (int i = 0; i < nivel; i++)
         {
+            if (i >= botonesNiveles.Length) break; // Evitar IndexOutOfRangeException
             botonesNiveles[i].interactable = true;
             botonesNiveles[i].GetComponent<Image>().color = Color.white;
         }
+    }
+    public void UnlockDifficulty2()
+    {
+        ShipButton.interactable = true;
     }
     public void ChangeButtonImages()
     {
@@ -71,7 +80,7 @@ public class NivelSelector : MonoBehaviour
             }
         }
     }
-    public void CHangeDifficulty()
+    public void ChangeDifficulty()
     {
         ChangeButtonImages();
         ChangePlanetImages();
