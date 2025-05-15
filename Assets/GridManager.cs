@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using System.Linq;
 using System.Collections;
-using System.Threading;
 using UnityEngine.UI;
 
 public class GridManager : MonoBehaviour
@@ -13,12 +12,15 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private GameObject PlayerPrefab;
     [SerializeField] private GameObject Operation;
-    [SerializeField] private PersistencyManager persistencyManager; 
-    [SerializeField] private GameObject selectorNivel; 
+    [SerializeField] private PersistencyManager persistencyManager;
+    [SerializeField] private GameObject selectorNivel;
     [SerializeField] private TMP_Text progress;
     [SerializeField] private float fadeSpeed = 2f; // Speed of tile fading
     [SerializeField] private SoundBank soundBank; // Reference to the sound bank
     [SerializeField] private NivelSelector selectorScript; // Reference to the character selector
+
+    // Add dialogue system references
+    [SerializeField] private DialogoConBotones dialogoConBotones;
 
     //Tile dict
     private Dictionary<Vector2, Tile> tileDict = new Dictionary<Vector2, Tile>();
@@ -30,6 +32,7 @@ public class GridManager : MonoBehaviour
     private Tile currentTile; // Reference to the current tile player is on
     private Coroutine changeTextCoroutine;
     private string trueOriginalText; // Always holds the real original text
+    private bool haFallado = false; // Flag to check if the player has failed
 
     void Start()
     {
@@ -89,7 +92,7 @@ public class GridManager : MonoBehaviour
     public void CheckResult(int result)
     {
         TMP_Text Text = Operation.GetComponent<TMP_Text>();
-        if (winCount+1 == winCondition)
+        if (winCount + 1 == winCondition && result == correctResult)
         {
             progress.text = "¡Has ganado!";
 
@@ -145,20 +148,46 @@ public class GridManager : MonoBehaviour
             //GEStion resultado incorrecto
             Debug.Log("Incorrecto!");
             soundBank.PlaySound("WRONG");
+            haFallado = true; // Set the flag to indicate failure
             StartChangeOperationText("Incorrecto!", Text);
         }
     }
+
     void Win()
     {
-        // CAMBIAR PARA NS QUE HAGA LO QUE QUEREMOS AL GANAR
-        //SI HAY QUE PONER ALGUNA RETROALIMENTACION PONER CORRUTINA PARA ESTO:
+        // Updated Win function with dialogue triggering
         selectorNivel.SetActive(true);
-        selectorScript.DesbloquearNivel(3);
-        persistencyManager.SetNivelActual(3);
+        persistencyManager.SetAcertoTodo(!haFallado);  // Pass the correct value (not haFallado)
+        persistencyManager.SetDesbloqueoPendiente(true);
 
+        // Set the dialogue selector flag like in JuegoMatematicas
+        persistencyManager.selectorDialogue = true;
 
+        // Reset the dialogue system if reference exists
+        if (dialogoConBotones != null)
+        {
+            dialogoConBotones.ResetDialogo();
+        }
+
+        if (!haFallado)
+        {
+            Debug.Log("SIN FALLAR");
+            persistencyManager.acertoTodo = true;
+        }
+
+        // Find and reset DialogoInteractivo just like in JuegoMatematicas
+        DialogoInteractivo dialogo = FindObjectOfType<DialogoInteractivo>();
+        if (dialogo != null)
+        {
+            dialogo.enabled = false;
+            dialogo.enabled = true;
+        }
+
+        // Reset flag for next game
+        haFallado = false;
+
+        // Deactivate game object
         transform.parent.gameObject.SetActive(false);
-
     }
 
     //GESTION DE CAMBIO DE TEXTO AL FALLAR
@@ -281,8 +310,8 @@ public class GridManager : MonoBehaviour
                 int num1 = Random.Range(2, 20);
                 int num2 = Random.Range(1, num1); // Asegurarse de que B es menor que A
                 result = num1 - num2;
-                correctResult = num2; // Correct answer is the second operand
-                OperationString = $"{num1} - ? = {result}";
+                correctResult = result;
+                OperationString = $"{num1} - {num2} = ?"; // 
             }
             else
             {
@@ -290,8 +319,8 @@ public class GridManager : MonoBehaviour
                 int num1 = Random.Range(1, 10);
                 int num2 = Random.Range(1, 10);
                 result = num1 * num2;
-                correctResult = num2; // Correct answer is the second operand
-                OperationString = $"{num1} x ? = {result}";
+                correctResult = result;
+                OperationString = $"{num1} x {num2} = ?";
             }
         }
         else
@@ -300,8 +329,8 @@ public class GridManager : MonoBehaviour
             int num1 = Random.Range(1, 10);
             int num2 = Random.Range(1, 10);
             result = num1 + num2;
-            correctResult = num2; // Correct answer is the second operand
-            OperationString = $"{num1} + ? =  {result}";
+            correctResult = result; // Correct answer is the second operand
+            OperationString = $"{num1} + {num2} =  ?";
         }
         if (changeTextCoroutine != null)
         {
@@ -320,8 +349,6 @@ public class GridManager : MonoBehaviour
 
         text.text = OperationString; // Update UI
         return OperationString;
-
-
     }
 
     void GenerateGrid()

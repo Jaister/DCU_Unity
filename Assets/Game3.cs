@@ -13,19 +13,26 @@ public class Game3 : MonoBehaviour
     [SerializeField] private GameObject progressText;
     [SerializeField] private GameObject soundBank;
     [SerializeField] private GameObject selectorNivel;
-    [SerializeField] private NivelSelector selectorScript; // manda cojones
+    [SerializeField] private NivelSelector selectorScript;
+
+    // Add dialogue system references
+    [SerializeField] private DialogoConBotones dialogoConBotones;
 
     private int GOAL = 10;
-
     private int correctAnswer, correctOptionIndex, progress;
+    private bool haFallado = false; // Track if player made mistakes
 
     // Start is called before the first frame update
     void Start()
     {
 
     }
+
     private void OnEnable()
     {
+        // Reset mistake tracking when game starts
+        haFallado = false;
+        progress = 0;
         progressText.GetComponent<TextMeshProUGUI>().text = $"{progress}/{GOAL}";
         GenerateOperation();
         GenerateOptions();
@@ -36,6 +43,7 @@ public class Game3 : MonoBehaviour
     {
 
     }
+
     void GenerateOperation()
     {
         string OperationString = "";
@@ -82,6 +90,7 @@ public class Game3 : MonoBehaviour
 
         OperationText.text = OperationString; // Update UI
     }
+
     void GenerateOptions()
     {
         // Generate a random index for the correct answer
@@ -104,14 +113,14 @@ public class Game3 : MonoBehaviour
             }
         }
     }
+
     public void CheckAnswer(int selectedOption)
     {
         // Comprobar si la respuesta es correcta
         if (selectedOption == correctOptionIndex)
         {
-            if (progress+1 == GOAL)
+            if (progress + 1 == GOAL)
             {
-                progressText.GetComponent<TextMeshProUGUI>().text = "¡Has ganado!";
                 Win();
                 return;
             }
@@ -124,21 +133,22 @@ public class Game3 : MonoBehaviour
             progress++;
             progressText.GetComponent<TextMeshProUGUI>().text = $"{progress}/{GOAL}";
             soundBank.GetComponent<SoundBank>().PlaySound("CORRECT");
-            foreach (var option in Options) 
+            foreach (var option in Options)
             {
                 option.GetComponentInChildren<Button>().interactable = true;
             }
-
         }
         else
         {
             // Respuesta incorrecta
             Debug.Log("Incorrecto!");
+            haFallado = true; // Mark that player made a mistake
             Options[selectedOption].GetComponentInChildren<Button>().interactable = false;
             StartChangeOperationText("Incorrecto", OperationText);
             soundBank.GetComponent<SoundBank>().PlaySound("WRONG");
         }
     }
+
     void OnDisable()
     {
         // Limpiar el texto de la operación al desactivar el objeto
@@ -148,15 +158,42 @@ public class Game3 : MonoBehaviour
         }
         progress = 0;
     }
+
     void Win()
     {
-        // CAMBIAR PARA NS QUE HAGA LO QUE QUEREMOS AL GANAR
-        //SI HAY QUE PONER ALGUNA RETROALIMENTACION PONER CORRUTINA PARA ESTO:
+        // Updated Win function with dialogue triggering
         selectorNivel.SetActive(true);
-        persistencyManager.UnlockDifficulty2();
-        selectorScript.UnlockDifficulty2();
-        transform.parent.gameObject.SetActive(false);
 
+        // Set acertoTodo based on whether player made mistakes
+        persistencyManager.SetAcertoTodo(!haFallado);
+        persistencyManager.SetDesbloqueoPendiente(true);
+
+        // Set the dialogue selector flag like in JuegoMatematicas
+        persistencyManager.selectorDialogue = true;
+
+        // Reset the dialogue system if reference exists
+        if (dialogoConBotones != null)
+        {
+            dialogoConBotones.ResetDialogo();
+        }
+
+        // Find and reset DialogoInteractivo just like in JuegoMatematicas
+        DialogoInteractivo dialogo = FindObjectOfType<DialogoInteractivo>();
+        if (dialogo != null)
+        {
+            dialogo.enabled = false;
+            dialogo.enabled = true;
+        }
+        if (haFallado)
+        {
+            Debug.Log("Has fallado en la cuenta, mostrando diálogo de error.");
+        }
+        else
+        {
+            persistencyManager.UnlockDifficulty2();
+            selectorScript.UnlockDifficulty2();
+        }
+        transform.parent.gameObject.SetActive(false);
     }
 
     //GESTION DE CAMBIO DE TEXTO AL FALLAR ROBADO DE TILESXD

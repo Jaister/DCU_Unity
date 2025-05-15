@@ -23,6 +23,7 @@ public class DialogoInteractivo : MonoBehaviour
     private int indiceFallo = 0;
     private bool mostrandoFallo = false;
 
+
     [SerializeField] private PersistencyManager persistencyManager;
 
     void OnEnable()
@@ -33,7 +34,7 @@ public class DialogoInteractivo : MonoBehaviour
         foreach (GameObject d in dialogosFallo) d.SetActive(false);
 
         // Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
-        if (persistencyManager.desbloqueoPendiente)
+        if (persistencyManager.desbloqueoPendiente && persistencyManager.dificultadActual ==1)
         {
             persistencyManager.SetDesbloqueoPendiente(false); // lo consumes
 
@@ -52,7 +53,7 @@ public class DialogoInteractivo : MonoBehaviour
         }
 
         // Diálogo normal inicial (si nunca se ha mostrado antes)
-        if (!persistencyManager.selectorDialogue && dialogos.Length > 0)
+        if (!persistencyManager.selectorDialogue && dialogos.Length > 0 && persistencyManager.dificultadActual == 1)
         {
             dialogos[0].SetActive(true);
             globoTexto.SetActive(true);
@@ -71,7 +72,6 @@ public class DialogoInteractivo : MonoBehaviour
             nivelSelector.ChangeDifficulty();
 
         }
-        //HACER QUE LA NAVE SE ACTIVE AL LLEGAR AL NIVEL 4
     }
 
 
@@ -113,8 +113,8 @@ public class DialogoInteractivo : MonoBehaviour
             // Desbloquear nivel 2
             if (nivelSelector != null)
             {
-                nivelSelector.DesbloquearNivel(2);
-                persistencyManager.SetNivelActual(2);
+                nivelSelector.DesbloquearNivel(persistencyManager.nivelActual + 1);
+                persistencyManager.SetNivelActual(persistencyManager.nivelActual + 1);
             }
 
             // Limpiar el flag para que no se repita

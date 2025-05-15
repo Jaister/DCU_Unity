@@ -11,6 +11,7 @@ public class PersistencyManager : MonoBehaviour
     public int dificultadActual = 1; // 1: Facil, 2: Normal, 3:YA VEREMOS....
     [SerializeField] private bool resetData = false; // Para resetear los datos al iniciar el juego
     [SerializeField] private bool fullGame;
+    [SerializeField] private GameObject planetasLoading;
 
 
     [SerializeField] private TMP_InputField playerNameInput;
@@ -36,6 +37,14 @@ public class PersistencyManager : MonoBehaviour
             nivelActual = 3;
         }
         starsOutput.text = $"Tienes {stars} estrellas {playerName}!!";
+        if (dificultadActual == 1)
+        {
+            planetasLoading.transform.GetChild(0).gameObject.SetActive(true); //MERCURIO
+        }
+        else if (dificultadActual == 2)
+        {
+            planetasLoading.transform.GetChild(1).gameObject.SetActive(true); //VENUS
+        }
     }
 
 

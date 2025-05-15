@@ -19,6 +19,8 @@ public class NivelSelector : MonoBehaviour
     [SerializeField] private Image[] buttonsimages;
     [SerializeField] private GameObject[] planets;
     [SerializeField] private Button ShipButton;
+    [SerializeField] private GameObject DIF2TEXT;
+    [SerializeField] private GameObject soundBank;
 
     void Start()
     {
@@ -48,6 +50,7 @@ public class NivelSelector : MonoBehaviour
     public void UnlockDifficulty2()
     {
         ShipButton.interactable = true;
+        DIF2TEXT.SetActive(false);
     }
     public void ChangeButtonImages()
     {

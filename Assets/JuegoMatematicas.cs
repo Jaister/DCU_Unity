@@ -200,22 +200,22 @@ public class JuegoMatematicas : MonoBehaviour
 
         persistencyManager.selectorDialogue = true;
         dialogoConBotones.ResetDialogo();
-     bool superadoSinErrores = aciertosSinFallo == totalCuentas;
+        bool superadoSinErrores = aciertosSinFallo == totalCuentas;
         persistencyManager.SetAcertoTodo(superadoSinErrores);
         persistencyManager.SetDesbloqueoPendiente(true);
 
 
-    NivelSelector.SetActive(true);
-    juegoGO.SetActive(false);
+        NivelSelector.SetActive(true);
+        juegoGO.SetActive(false);
 
-    //Reiniciamos el diálogo interactivo
-    DialogoInteractivo dialogo = FindObjectOfType<DialogoInteractivo>();
-    if (dialogo != null)
-    {
-        dialogo.enabled = false;
-        dialogo.enabled = true;
-    }
-        ReiniciarJuego();
+        //Reiniciamos el diálogo interactivo
+        DialogoInteractivo dialogo = FindObjectOfType<DialogoInteractivo>();
+        if (dialogo != null)
+        {
+            dialogo.enabled = false;
+            dialogo.enabled = true;
+        }
+            ReiniciarJuego();
     }
 
    public void ReiniciarJuego()
