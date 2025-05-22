@@ -2199,6 +2199,14 @@ PrefabInstance:
       propertyPath: m_fontSize
       value: 84.1
       objectReference: {fileID: 0}
+    - target: {fileID: 4893930530711376394, guid: 90e0427d9ce790647b7a24cc09f93155, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4893930530711376394, guid: 90e0427d9ce790647b7a24cc09f93155, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2975,7 +2983,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Vamos a ir al planeta m\xE1s cercano a la Tierra"
+  m_text: "Vamos a ir al planeta m\xE1s cercano al Sol"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3497,15 +3505,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4531194640995507327, guid: 8684da908b8234da9b1485a56f4f9b9a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 30.000002
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4531194640995507327, guid: 8684da908b8234da9b1485a56f4f9b9a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 30.000002
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4531194640995507327, guid: 8684da908b8234da9b1485a56f4f9b9a, type: 3}
       propertyPath: m_LocalScale.z
-      value: 30.000002
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 4630288171868565298, guid: 8684da908b8234da9b1485a56f4f9b9a, type: 3}
       propertyPath: m_SortingOrder
@@ -4441,14 +4449,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 313643571}
   m_Father: {fileID: 498982690}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -40}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &402217721
@@ -7832,6 +7840,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 218945956}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Pause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &684647046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10688,6 +10708,7 @@ MonoBehaviour:
   - {fileID: 1740576317}
   - {fileID: 1405188400}
   - {fileID: 1499468611}
+  BG_MUSIC: {fileID: 218945956}
   persistencyManager: {fileID: 1822762593}
 --- !u!1 &1090904226
 GameObject:
@@ -13415,6 +13436,18 @@ MonoBehaviour:
       - m_Target: {fileID: 568250138}
         m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
         m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 218945956}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Pause
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17433,6 +17466,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 218945956}
+        m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+        m_MethodName: Pause
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1772237986
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18790,11 +18835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44086fab01dae9240a3ffa5719d83041, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetCorner: 3
-  horizontalPadding: 0
-  verticalPadding: 0
-  respectSafeArea: 1
-  showDebugInfo: 1
+  offset: {x: 20, y: 20}
 --- !u!1 &1914824608
 GameObject:
   m_ObjectHideFlags: 0
@@ -20020,6 +20061,14 @@ PrefabInstance:
     - target: {fileID: 4893930530711376394, guid: 90e0427d9ce790647b7a24cc09f93155, type: 3}
       propertyPath: m_fontSize
       value: 84.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4893930530711376394, guid: 90e0427d9ce790647b7a24cc09f93155, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+    - target: {fileID: 4893930530711376394, guid: 90e0427d9ce790647b7a24cc09f93155, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

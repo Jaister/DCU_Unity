@@ -23,11 +23,16 @@ public class DialogoInteractivo : MonoBehaviour
     private int indiceFallo = 0;
     private bool mostrandoFallo = false;
 
+    [SerializeField] private AudioSource BG_MUSIC;
+
 
     [SerializeField] private PersistencyManager persistencyManager;
 
     void OnEnable()
     {
+        //Reanudamos Musica
+        if (BG_MUSIC != null && !BG_MUSIC.isPlaying)
+            BG_MUSIC.Play();
         // Ocultar todos los diálogos por si acaso
         foreach (GameObject d in dialogos) d.SetActive(false);
         foreach (GameObject d in dialogosFinales) d.SetActive(false);

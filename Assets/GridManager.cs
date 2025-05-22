@@ -357,7 +357,10 @@ public class GridManager : MonoBehaviour
         Vector2 tileSize = _tilePrefab.GetComponent<SpriteRenderer>().bounds.size;
 
         // Adjust tile size if necessary (your hack was multiplying by 1.5f)
-        tileSize *= 1.5f;
+        if (Screen.width < 1200)
+            tileSize *= 2f; // Adjust tile size for smaller screens
+        else if (Screen.width >= 1200)
+            tileSize *= 1.75f; // Adjust tile size for larger screens
 
         // Calculate total grid size
         float gridWidth = width * tileSize.x;
@@ -399,6 +402,7 @@ public class GridManager : MonoBehaviour
         TMP_Text Text = Operation.GetComponent<TMP_Text>();
         Text.text = GenerateOperation();
         NumberFiller(MAX_TILES);
+        this.transform.localScale = new Vector3(.8f, .8f, .8f); // Reset scale to normal
     }
 
     void PositionPlayer()
