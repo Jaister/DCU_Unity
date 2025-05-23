@@ -23,6 +23,11 @@ public class DialogoInteractivo : MonoBehaviour
     private int indiceFallo = 0;
     private bool mostrandoFallo = false;
 
+    [Header("Diálogos si ha completado todos los niveles")]
+    public GameObject[] dialogosTodosCompletados;
+    private int indiceTodos = 0;
+    private bool mostrandoTodos = false;
+
     [SerializeField] private AudioSource BG_MUSIC;
 
 
@@ -39,12 +44,19 @@ public class DialogoInteractivo : MonoBehaviour
         foreach (GameObject d in dialogosFallo) d.SetActive(false);
 
         // Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
-        if (persistencyManager.desbloqueoPendiente && persistencyManager.dificultadActual ==1)
+        if (persistencyManager.desbloqueoPendiente && persistencyManager.dificultadActual == 1)
         {
-            persistencyManager.SetDesbloqueoPendiente(false); // lo consumes
+            persistencyManager.SetDesbloqueoPendiente(false);
 
             if (persistencyManager.acertoTodo)
             {
+                // Aquí comprobamos si se completó el último nivel
+                if (persistencyManager.nivelActual == 3)
+                {
+                    MostrarDialogoTodosCompletados();
+                    return;
+                }
+
                 mostrandoFinal = true;
                 MostrarDialogoFinal();
             }
@@ -54,8 +66,9 @@ public class DialogoInteractivo : MonoBehaviour
                 MostrarDialogoFallo();
             }
 
-            return; // Muy importante: no continuar mostrando más cosas
+            return;
         }
+
 
         // Diálogo normal inicial (si nunca se ha mostrado antes)
         if (!persistencyManager.selectorDialogue && dialogos.Length > 0 && persistencyManager.dificultadActual == 1)
@@ -84,7 +97,11 @@ public class DialogoInteractivo : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                if (mostrandoFinal)
+                if (mostrandoTodos)
+                {
+                    MostrarSiguienteTodosCompletados();
+                }
+                else if (mostrandoFinal)
                 {
                     MostrarSiguienteFinal();
                 }
@@ -97,6 +114,7 @@ public class DialogoInteractivo : MonoBehaviour
                     MostrarSiguiente();
                 }
             }
+
         }
 
     void MostrarSiguienteFinal()
@@ -203,6 +221,44 @@ public class DialogoInteractivo : MonoBehaviour
         mostrandoFallo = false;
 
         Debug.Log("Fin del diálogo de fallo.");
+    }
+}
+
+    public void MostrarDialogoTodosCompletados()
+    {
+        mostrandoTodos = true;
+        indiceTodos = 0;
+
+        foreach (GameObject d in dialogos)
+            d.SetActive(false);
+
+        globoTexto?.SetActive(true);
+
+        if (dialogosTodosCompletados.Length > 0)
+        {
+            dialogosTodosCompletados[0].SetActive(true);
+            indiceTodos = 1;
+        }
+    }
+
+    void MostrarSiguienteTodosCompletados()
+{
+    if (indiceTodos < dialogosTodosCompletados.Length)
+    {
+        dialogosTodosCompletados[indiceTodos - 1].SetActive(false);
+        dialogosTodosCompletados[indiceTodos].SetActive(true);
+        indiceTodos++;
+    }
+    else
+    {
+        dialogosTodosCompletados[indiceTodos - 1].SetActive(false);
+        globoTexto?.SetActive(false);
+        mostrandoTodos = false;
+
+        Debug.Log("Fin del diálogo de todos los niveles completados.");
+        
+        // Aquí podrías mostrar la nave desbloqueada o activar algo especial
+        nivelSelector.UnlockDifficulty2();
     }
 }
 
