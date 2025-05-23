@@ -62,6 +62,16 @@ public class JuegoMatematicas : MonoBehaviour
 
         if (cuentasResueltas >= totalCuentas)
         {
+            if (aciertosSinFallo == 10) { // Si ha acertado todo, se le da un bonus
+                persistencyManager.AddStars(10);
+            }
+            else
+            {
+                persistencyManager.AddStars(1);
+
+            }
+            persistencyManager.UpdateStarsText();
+
             FinDelJuego();
             return;
         }
@@ -142,7 +152,6 @@ public class JuegoMatematicas : MonoBehaviour
             if (!falloEnEstaCuenta)
             {
                 aciertosSinFallo++; // Contamos solo si acierta a la primera
-                persistencyManager.AddStars();
             }
 
             cuentasResueltas++;

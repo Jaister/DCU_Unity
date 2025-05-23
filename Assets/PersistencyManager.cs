@@ -104,9 +104,9 @@ public class PersistencyManager : MonoBehaviour
         playerNameInput.text = "";
         Debug.Log("All data reset!");
     }
-    public void AddStars()
+    public void AddStars(int quantity )
     {
-        stars += 1;
+        stars += quantity;
         PlayerPrefs.SetInt("Stars", stars);
         PlayerPrefs.Save();
     }

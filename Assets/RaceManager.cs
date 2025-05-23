@@ -77,7 +77,7 @@ public class RaceManager : MonoBehaviour
         if (selectedValue == correctResult)
         {
             // Correct answer, generate new operation
-            persistencyManager.AddStars();
+            
             persistencyManager.UpdateStarsText();
             GenerateRaceOptions();
         }

@@ -94,6 +94,16 @@ public class GridManager : MonoBehaviour
         TMP_Text Text = Operation.GetComponent<TMP_Text>();
         if (winCount + 1 == winCondition && result == correctResult)
         {
+            if (haFallado)
+            {
+                persistencyManager.AddStars(1);
+            }
+            else
+            {
+                persistencyManager.AddStars(10);
+            }
+            persistencyManager.UpdateStarsText();
+
             progress.text = "¡Has ganado!";
 
             Win();
@@ -132,7 +142,6 @@ public class GridManager : MonoBehaviour
 
             Text.text = GenerateOperation();
             NumberFiller(MAX_TILES - 1);
-            persistencyManager.AddStars();
             persistencyManager.UpdateStarsText();
             winCount++;
             progress.text = $"{winCount}/{winCondition}";
