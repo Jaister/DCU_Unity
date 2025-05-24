@@ -82,34 +82,29 @@ public class JuegoMatematicas : MonoBehaviour
             btn.interactable = true;
             btn.GetComponent<Image>().color = colorDefault;
         }
-        if (persistencyManager.dificultadActual == 2)
+       if (persistencyManager.dificultadActual == 1)
         {
-            // Generar operación resta O multiplicación
-            int operacion = Random.Range(0, 2); // 0 para resta, 1 para multiplicación
-            if (operacion == 0)
-            {
-                // Generar operación de resta
-                ultimoA = Random.Range(2, 20);
-                ultimoB = Random.Range(1, ultimoA); // Asegurarse de que B es menor que A
-                respuestaCorrecta = ultimoA - ultimoB;
-                textoCuenta.text = $"{ultimoA} - {ultimoB} = ?";
-            }
-            else
-            {
-                // Generar operación de multiplicación
-                ultimoA = Random.Range(1, 10);
-                ultimoB = Random.Range(1, 10);
-                respuestaCorrecta = ultimoA * ultimoB;
-                textoCuenta.text = $"{ultimoA} x {ultimoB} = ?";
-            }
-        }
-        else
-        {
-            // Generar operación de suma
+            // Solo sumas
             ultimoA = Random.Range(1, 10);
             ultimoB = Random.Range(1, 10);
             respuestaCorrecta = ultimoA + ultimoB;
             textoCuenta.text = $"{ultimoA} + {ultimoB} = ?";
+        }
+        else if (persistencyManager.dificultadActual == 2)
+        {
+            // Solo restas
+            ultimoA = Random.Range(2, 20);
+            ultimoB = Random.Range(1, ultimoA); // Asegurar que B < A
+            respuestaCorrecta = ultimoA - ultimoB;
+            textoCuenta.text = $"{ultimoA} - {ultimoB} = ?";
+        }
+        else if (persistencyManager.dificultadActual == 3)
+        {
+            // Solo multiplicaciones
+            ultimoA = Random.Range(1, 10);
+            ultimoB = Random.Range(1, 10);
+            respuestaCorrecta = ultimoA * ultimoB;
+            textoCuenta.text = $"{ultimoA} x {ultimoB} = ?";
         }
 
         // Generar respuestas (1 correcta + 2 incorrectas únicas)

@@ -28,6 +28,24 @@ public class DialogoInteractivo : MonoBehaviour
     private int indiceTodos = 0;
     private bool mostrandoTodos = false;
 
+    [Header("Diálogo tras desbloqueo de nave")]
+    public GameObject[] dialogoPostNave;
+    private int indicePostNave = 0;
+    private bool mostrandoPostNave = false;
+
+    [Header("Diálogo tras desbloqueo de dificultad 3")]
+    public GameObject[] dialogoPostDificultad3;
+    private int indicePostDif3 = 0;
+    private bool mostrandoPostDif3 = false;
+
+    [Header("Diálogo al visitar el planeta de dificultad 3")]
+    public GameObject[] dialogoPlanetaDif3;
+    private int indicePlanetaDif3 = 0;
+    private bool mostrandoPlanetaDif3 = false;
+
+
+
+
     [SerializeField] private AudioSource BG_MUSIC;
 
 
@@ -93,29 +111,33 @@ public class DialogoInteractivo : MonoBehaviour
     }
 
 
-    void Update()
+   void Update()
+{
+    if (Input.GetMouseButtonDown(0))
+    {
+        if (mostrandoTodos)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (mostrandoTodos)
-                {
-                    MostrarSiguienteTodosCompletados();
-                }
-                else if (mostrandoFinal)
-                {
-                    MostrarSiguienteFinal();
-                }
-                else if (mostrandoFallo)
-                {
-                    MostrarSiguienteFallo();
-                }
-                else if (!persistencyManager.selectorDialogue)
-                {
-                    MostrarSiguiente();
-                }
-            }
-
+            MostrarSiguienteTodosCompletados();
         }
+        else if (mostrandoFinal)
+        {
+            MostrarSiguienteFinal();
+        }
+        else if (mostrandoFallo)
+        {
+            MostrarSiguienteFallo();
+        }
+        else if (mostrandoPostNave)
+        {
+            MostrarSiguientePostNave();
+        }
+        else if (!persistencyManager.selectorDialogue)
+        {
+            MostrarSiguiente();
+        }
+    }
+}
+
 
     void MostrarSiguienteFinal()
     {
@@ -260,7 +282,121 @@ public class DialogoInteractivo : MonoBehaviour
         // Aquí podrías mostrar la nave desbloqueada o activar algo especial
         nivelSelector.UnlockDifficulty2();
     }
+
+    
 }
+
+public void MostrarDialogoPostNave()
+{
+    mostrandoPostNave = true;
+    indicePostNave = 0;
+
+    // Ocultar otros diálogos por seguridad
+    foreach (GameObject d in dialogos)
+        d.SetActive(false);
+
+    globoTexto?.SetActive(true);
+
+    if (dialogoPostNave.Length > 0)
+    {
+        dialogoPostNave[0].SetActive(true);
+        indicePostNave = 1;
+    }
+}
+
+void MostrarSiguientePostNave()
+{
+    if (indicePostNave < dialogoPostNave.Length)
+    {
+        dialogoPostNave[indicePostNave - 1].SetActive(false);
+        dialogoPostNave[indicePostNave].SetActive(true);
+        indicePostNave++;
+    }
+  else
+    {
+        dialogoPostNave[indicePostNave - 1].SetActive(false);
+        globoTexto?.SetActive(false);
+        mostrandoPostNave = false;
+
+        Debug.Log("Fin del diálogo post desbloqueo de nave.");
+
+        nivelSelector.HabilitarClickShipButton();
+    }
+
+}
+
+public void MostrarDialogoPostDificultad3()
+{
+    mostrandoPostDif3 = true;
+    indicePostDif3 = 0;
+
+    foreach (GameObject d in dialogos)
+        d.SetActive(false);
+
+    globoTexto?.SetActive(true);
+
+    if (dialogoPostDificultad3.Length > 0)
+    {
+        dialogoPostDificultad3[0].SetActive(true);
+        indicePostDif3 = 1;
+    }
+}
+
+void MostrarSiguientePostDificultad3()
+{
+    if (indicePostDif3 < dialogoPostDificultad3.Length)
+    {
+        dialogoPostDificultad3[indicePostDif3 - 1].SetActive(false);
+        dialogoPostDificultad3[indicePostDif3].SetActive(true);
+        indicePostDif3++;
+    }
+    else
+    {
+        dialogoPostDificultad3[indicePostDif3 - 1].SetActive(false);
+        globoTexto?.SetActive(false);
+        mostrandoPostDif3 = false;
+
+        Debug.Log("Fin del diálogo post desbloqueo de dificultad 3.");
+    }
+}
+
+public void MostrarDialogoPlanetaDif3()
+{
+    mostrandoPlanetaDif3 = true;
+    indicePlanetaDif3 = 0;
+
+    // Ocultar otros diálogos por seguridad
+    foreach (GameObject d in dialogos)
+        d.SetActive(false);
+
+    globoTexto?.SetActive(true);
+
+    if (dialogoPlanetaDif3.Length > 0)
+    {
+        dialogoPlanetaDif3[0].SetActive(true);
+        indicePlanetaDif3 = 1;
+    }
+}
+
+void MostrarSiguientePlanetaDif3()
+{
+    if (indicePlanetaDif3 < dialogoPlanetaDif3.Length)
+    {
+        dialogoPlanetaDif3[indicePlanetaDif3 - 1].SetActive(false);
+        dialogoPlanetaDif3[indicePlanetaDif3].SetActive(true);
+        indicePlanetaDif3++;
+    }
+    else
+    {
+        dialogoPlanetaDif3[indicePlanetaDif3 - 1].SetActive(false);
+        globoTexto?.SetActive(false);
+        mostrandoPlanetaDif3 = false;
+
+        Debug.Log("Fin del diálogo de bienvenida al planeta de dificultad 3.");
+    }
+}
+
+
 
 
 }

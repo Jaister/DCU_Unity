@@ -16,9 +16,9 @@ public class Game3 : MonoBehaviour
     [SerializeField] private NivelSelector selectorScript;
     [SerializeField] private GameObject Personaje;
 
-    // Nueva configuración para el movimiento curvo
-    [Header("Configuración de Movimiento")]
-    [SerializeField] private float movementDuration = 0.5f; // Duración del movimiento
+    // Nueva configuraciï¿½n para el movimiento curvo
+    [Header("Configuraciï¿½n de Movimiento")]
+    [SerializeField] private float movementDuration = 0.5f; // Duraciï¿½n del movimiento
     [SerializeField] private float curveHeight = 0.5f; // Alto de la curva
     [SerializeField] private AnimationCurve movementCurve; // Curva para suavizar el movimiento
 
@@ -29,12 +29,12 @@ public class Game3 : MonoBehaviour
     private int correctAnswer, correctOptionIndex, progress;
     private bool haFallado = false; // Track if player made mistakes
     private Coroutine characterMovementCoroutine; // Para controlar el movimiento del personaje
-    private Vector3 characterInitialPosition; // Añadir esta variable para almacenar la posición inicial
+    private Vector3 characterInitialPosition; // Aï¿½adir esta variable para almacenar la posiciï¿½n inicial
 
     // Start is called before the first frame update
     void Start()
     {
-        // Inicializar la curva de movimiento si está vacía
+        // Inicializar la curva de movimiento si estï¿½ vacï¿½a
         if (movementCurve.keys.Length == 0)
         {
             movementCurve = new AnimationCurve(
@@ -44,7 +44,7 @@ public class Game3 : MonoBehaviour
             );
         }
         
-        // Guardar la posición inicial del personaje
+        // Guardar la posiciï¿½n inicial del personaje
         if (Personaje != null)
         {
             characterInitialPosition = Personaje.transform.position;
@@ -60,7 +60,7 @@ public class Game3 : MonoBehaviour
         GenerateOperation();
         GenerateOptions();
         
-        // Asegurarse de que el personaje esté en su posición inicial
+        // Asegurarse de que el personaje estï¿½ en su posiciï¿½n inicial
         if (Personaje != null)
         {
             characterInitialPosition = Personaje.transform.position;
@@ -78,6 +78,8 @@ public class Game3 : MonoBehaviour
                 Personaje.transform.GetChild(0).gameObject.SetActive(true);
             }
         }
+
+        ReiniciarJuego3(); // Reiniciar el juego al activarlo
     }
 
     // Update is called once per frame
@@ -93,11 +95,11 @@ public class Game3 : MonoBehaviour
         int result = 0;
         if (persistencyManager.dificultadActual == 2)
         {
-            // Generar operación resta O multiplicación
-            int operacion = Random.Range(0, 2); // 0 para resta, 1 para multiplicación
+            // Generar operaciï¿½n resta O multiplicaciï¿½n
+            int operacion = Random.Range(0, 2); // 0 para resta, 1 para multiplicaciï¿½n
             if (operacion == 0)
             {
-                // Generar operación de resta
+                // Generar operaciï¿½n de resta
                 int num1 = Random.Range(2, 20);
                 int num2 = Random.Range(1, num1); // Asegurarse de que B es menor que A
                 result = num1 - num2;
@@ -106,7 +108,7 @@ public class Game3 : MonoBehaviour
             }
             else
             {
-                // Generar operación de multiplicación
+                // Generar operaciï¿½n de multiplicaciï¿½n
                 int num1 = Random.Range(1, 10);
                 int num2 = Random.Range(1, 10);
                 result = num1 * num2;
@@ -116,7 +118,7 @@ public class Game3 : MonoBehaviour
         }
         else
         {
-            // Generar operación de suma
+            // Generar operaciï¿½n de suma
             int num1 = Random.Range(1, 10);
             int num2 = Random.Range(1, 10);
             result = num1 + num2;
@@ -164,19 +166,19 @@ public class Game3 : MonoBehaviour
             StopCoroutine(characterMovementCoroutine);
         }
 
-        // Mover el personaje hacia el botón seleccionado con una trayectoria curva
+        // Mover el personaje hacia el botï¿½n seleccionado con una trayectoria curva
         characterMovementCoroutine = StartCoroutine(MoveCharacterToButton(selectedOption));
     }
 
     private IEnumerator MoveCharacterToButton(int selectedOption)
     {
-        // Deshabilitar temporalmente los botones durante la animación
+        // Deshabilitar temporalmente los botones durante la animaciï¿½n
         foreach (var option in Options)
         {
             option.GetComponentInChildren<Button>().interactable = false;
         }
 
-        // Cambiar la imagen del personaje según el botón seleccionado
+        // Cambiar la imagen del personaje segï¿½n el botï¿½n seleccionado
         if (Personaje != null && Personaje.transform.childCount >= 2)
         {
             // Desactivar todos los hijos primero
@@ -185,9 +187,9 @@ public class Game3 : MonoBehaviour
                 Personaje.transform.GetChild(i).gameObject.SetActive(false);
             }
             
-            // Activar el hijo correspondiente según el botón seleccionado
-            // Botones 1 y 2 (índices 0 y 1) -> mostrar el segundo hijo (índice 1)
-            // Botones 3 y 4 (índices 2 y 3) -> mostrar el primer hijo (índice 0)
+            // Activar el hijo correspondiente segï¿½n el botï¿½n seleccionado
+            // Botones 1 y 2 (ï¿½ndices 0 y 1) -> mostrar el segundo hijo (ï¿½ndice 1)
+            // Botones 3 y 4 (ï¿½ndices 2 y 3) -> mostrar el primer hijo (ï¿½ndice 0)
             if (selectedOption < 2) // Botones 1 o 2
             {
                 Personaje.transform.GetChild(1).gameObject.SetActive(true);
@@ -198,13 +200,13 @@ public class Game3 : MonoBehaviour
             }
         }
 
-        // Posición inicial del personaje
+        // Posiciï¿½n inicial del personaje
         Vector3 startPosition = Personaje.transform.position;
         
-        // Posición final (botón seleccionado)
+        // Posiciï¿½n final (botï¿½n seleccionado)
         Vector3 targetPosition = Options[selectedOption].transform.position;
         
-        // Punto de control para la curva (punto más alto)
+        // Punto de control para la curva (punto mï¿½s alto)
         Vector3 controlPoint = (startPosition + targetPosition) / 2;
         controlPoint.y += curveHeight; // Ajustar altura de la curva
 
@@ -216,7 +218,7 @@ public class Game3 : MonoBehaviour
             float normalizedTime = elapsedTime / movementDuration;
             float curveValue = movementCurve.Evaluate(normalizedTime);
             
-            // Interpolación cuadrática para crear una parábola
+            // Interpolaciï¿½n cuadrï¿½tica para crear una parï¿½bola
             Vector3 m1 = Vector3.Lerp(startPosition, controlPoint, normalizedTime);
             Vector3 m2 = Vector3.Lerp(controlPoint, targetPosition, normalizedTime);
             Personaje.transform.position = Vector3.Lerp(m1, m2, normalizedTime);
@@ -224,10 +226,10 @@ public class Game3 : MonoBehaviour
             yield return null;
         }
         
-        // Asegurar que el personaje llegue exactamente a la posición final
+        // Asegurar que el personaje llegue exactamente a la posiciï¿½n final
         Personaje.transform.position = targetPosition;
         
-        // Procesar el resultado después de que el personaje llegue al botón
+        // Procesar el resultado despuï¿½s de que el personaje llegue al botï¿½n
         ProcessResult(selectedOption);
     }
 
@@ -253,7 +255,7 @@ public class Game3 : MonoBehaviour
                 option.GetComponentInChildren<Button>().interactable = true;
             }
 
-            // Devolver el personaje a su posición original después de un breve retraso
+            // Devolver el personaje a su posiciï¿½n original despuï¿½s de un breve retraso
             StartCoroutine(ReturnCharacterAfterDelay(0.5f));
         }
         else
@@ -265,7 +267,7 @@ public class Game3 : MonoBehaviour
             StartChangeOperationText("Incorrecto", OperationText);
             soundBank.GetComponent<SoundBank>().PlaySound("WRONG");
             
-            // Devolver personaje a posición original
+            // Devolver personaje a posiciï¿½n original
             StartCoroutine(ReturnCharacterAfterDelay(1.0f));
             
             // Reactivar botones excepto el incorrecto
@@ -283,17 +285,17 @@ public class Game3 : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         
-        // Guardar la posición actual
+        // Guardar la posiciï¿½n actual
         Vector3 currentPos = Personaje.transform.position;
         
-        // Usar la posición inicial guardada para retornar
+        // Usar la posiciï¿½n inicial guardada para retornar
         Vector3 originalPosition = characterInitialPosition;
         
-        // Movimiento de regreso con una curva más suave
+        // Movimiento de regreso con una curva mï¿½s suave
         float returnTime = 0;
         float returnDuration = 0.3f;
         
-        // Punto de control para la curva de regreso (punto más alto)
+        // Punto de control para la curva de regreso (punto mï¿½s alto)
         Vector3 controlPoint = (currentPos + originalPosition) / 2;
         controlPoint.y += curveHeight * 0.7f; // Un poco menos de altura en el regreso
         
@@ -302,10 +304,10 @@ public class Game3 : MonoBehaviour
             returnTime += Time.deltaTime;
             float t = returnTime / returnDuration;
             
-            // Uso de easing para un movimiento más suave
+            // Uso de easing para un movimiento mï¿½s suave
             t = Mathf.SmoothStep(0, 1, t);
             
-            // Interpolación cuadrática para crear una parábola en el regreso
+            // Interpolaciï¿½n cuadrï¿½tica para crear una parï¿½bola en el regreso
             Vector3 m1 = Vector3.Lerp(currentPos, controlPoint, t);
             Vector3 m2 = Vector3.Lerp(controlPoint, originalPosition, t);
             Personaje.transform.position = Vector3.Lerp(m1, m2, t);
@@ -313,14 +315,14 @@ public class Game3 : MonoBehaviour
             yield return null;
         }
         
-        // Asegurar que el personaje llegue exactamente a la posición inicial
+        // Asegurar que el personaje llegue exactamente a la posiciï¿½n inicial
         Personaje.transform.position = originalPosition;
         
     }
 
     void OnDisable()
     {
-        // Limpiar el texto de la operación al desactivar el objeto
+        // Limpiar el texto de la operaciï¿½n al desactivar el objeto
         if (OperationText != null)
         {
             OperationText.text = "OPERACION";
@@ -365,7 +367,7 @@ public class Game3 : MonoBehaviour
         }
         if (haFallado)
         {
-            Debug.Log("Has fallado en la cuenta, mostrando diálogo de error.");
+            Debug.Log("Has fallado en la cuenta, mostrando diï¿½logo de error.");
         }
         else
         {
@@ -400,4 +402,28 @@ public class Game3 : MonoBehaviour
         trueOriginalText = texto.text; // Save the real text only once, before changing
         changeTextCoroutine = StartCoroutine(ChangeOperationTextCoroutine(newText, texto));
     }
+
+    public void ReiniciarJuego3()
+{
+    haFallado = false;
+    progress = 0;
+    progressText.GetComponent<TextMeshProUGUI>().text = $"{progress}/{GOAL}";
+    GenerateOperation();
+    GenerateOptions();
+
+    // Reactivar los botones
+    foreach (var option in Options)
+    {
+        option.GetComponentInChildren<Button>().interactable = true;
+    }
+
+    // Restaurar la posiciÃ³n del personaje
+    if (Personaje != null)
+    {
+        Personaje.transform.position = characterInitialPosition;
+    }
+
+    Debug.Log("Juego3 reiniciado correctamente.");
+}
+
 }

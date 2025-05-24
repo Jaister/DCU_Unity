@@ -21,6 +21,12 @@ public class NivelSelector : MonoBehaviour
     [SerializeField] private Button ShipButton;
     [SerializeField] private GameObject DIF2TEXT;
     [SerializeField] private GameObject soundBank;
+    [SerializeField] private DialogoInteractivo dialogoInteractivo;
+
+    private bool puedeHacerClickNave = true;
+    private bool postNaveDialogoMostrado = false;
+
+
 
     void Start()
     {
@@ -83,13 +89,28 @@ public class NivelSelector : MonoBehaviour
             }
         }
     }
-    public void ChangeDifficulty()
-    {
-        ChangeButtonImages();
-        ChangePlanetImages();
+   public void ChangeDifficulty()
+{
+    ChangeButtonImages();
+    ChangePlanetImages();
 
-        persistencyManager.dificultadActual = persistencyManager.dificultadActual == 1 ? 2 : 1;
-        }
+    persistencyManager.dificultadActual = persistencyManager.dificultadActual == 1 ? 2 : 1;
+
+    // 💡 Solo mostrar el diálogo la primera vez
+    if (!postNaveDialogoMostrado)
+    {
+        Debug.Log("Mostrando diálogo post-dificultad por primera vez.");
+        dialogoInteractivo.MostrarDialogoPostNave();
+        postNaveDialogoMostrado = true; // Ahora no se volverá a mostrar
+        puedeHacerClickNave = false;
+    }
+}
+
+public void HabilitarClickShipButton()
+{
+    puedeHacerClickNave = true;
+}
+
     public void VolverDesdeCarrera()
     {
         Debug.Log("Volviendo a selector de niveles");
