@@ -39,6 +39,7 @@ public class JuegoMatematicas : MonoBehaviour
     [SerializeField] private DialogoConBotones dialogoConBotones;
     [SerializeField] private ImpulsoPersonajeJugador impulsoPersonajeJugador;
     [SerializeField] private SoundBank soundBank;
+    [SerializeField] private NivelSelector selector;
 
     void OnEnable()
 {
@@ -208,7 +209,11 @@ public class JuegoMatematicas : MonoBehaviour
         persistencyManager.SetAcertoTodo(superadoSinErrores);
         persistencyManager.SetDesbloqueoPendiente(true);
 
-
+        if (persistencyManager.dificultadMaxima >1 && persistencyManager.nivelActual <3 && superadoSinErrores)
+        {
+            selector.DesbloquearNivel(persistencyManager.nivelActual + 1);
+            persistencyManager.SetNivelActual(persistencyManager.nivelActual + 1);
+        }
         NivelSelector.SetActive(true);
         juegoGO.SetActive(false);
 

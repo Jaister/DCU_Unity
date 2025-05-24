@@ -47,7 +47,9 @@ public class DialogoInteractivo : MonoBehaviour
 
 
     [SerializeField] private AudioSource BG_MUSIC;
+    [SerializeField] private Image Nave;
 
+    [SerializeField] private Sprite naveDificultad3; // Imagen de la nave para la dificultad 3
 
     [SerializeField] private PersistencyManager persistencyManager;
 
@@ -89,6 +91,8 @@ public class DialogoInteractivo : MonoBehaviour
 
 
         // Diálogo normal inicial (si nunca se ha mostrado antes)
+        
+        Debug.Log("Iniciando diálogo interactivo. SelectorDialogue: " + persistencyManager.selectorDialogue + "  " + persistencyManager.dificultadActual);
         if (!persistencyManager.selectorDialogue && dialogos.Length > 0 && persistencyManager.dificultadActual == 1)
         {
             dialogos[0].SetActive(true);
@@ -100,13 +104,26 @@ public class DialogoInteractivo : MonoBehaviour
             nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
             Debug.Log("Desbloqueando nivel " + persistencyManager.nivelActual);
         }
+
         if (persistencyManager.dificultadActual == 2)
         {
+            nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
+
             nivelSelector.UnlockDifficulty2();
             persistencyManager.dificultadActual = 1; // Cambia dificultad a 1 porque se cambia abajo xd
 
             nivelSelector.ChangeDifficulty();
+        }
+        else if (persistencyManager.dificultadActual == 3)
+        {
+            nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
 
+            Nave.sprite = naveDificultad3; // Cambia la nave a la de dificultad 3
+            nivelSelector.UnlockDifficulty2();
+            persistencyManager.dificultadActual = 1; // Cambia dificultad a 1 porque se cambia abajo xd
+
+            nivelSelector.ChangeDifficulty();
+            nivelSelector.ChangeDifficulty();
         }
     }
 

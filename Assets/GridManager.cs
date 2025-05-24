@@ -72,8 +72,12 @@ public class GridManager : MonoBehaviour
         PlayerPrefab.SetActive(false);
         currentTile = null;
         winCount = 0;
+        haFallado = false; // Reset failure flag
         progress.text = $"{winCount}/{winCondition}";
         Operation.GetComponent<TMP_Text>().text = "OPERACION";
+
+        // Reset transform scale explicitly (soluciona el problema de crecimiento)
+        this.transform.localScale = new Vector3(1f,1f,1f);
 
         // Safely destroy all tiles
         List<Tile> tilesToDestroy = new List<Tile>(tileDict.Values);
@@ -182,6 +186,12 @@ public class GridManager : MonoBehaviour
         {
             Debug.Log("SIN FALLAR");
             persistencyManager.acertoTodo = true;
+            if (persistencyManager.dificultadMaxima > 1 && persistencyManager.dificultadActual>1)
+            {
+                // Only unlock next level if current level is less than 3
+                selectorScript.DesbloquearNivel(persistencyManager.nivelActual + 1);
+                persistencyManager.SetNivelActual(persistencyManager.nivelActual + 1);
+            }
         }
 
         // Find and reset DialogoInteractivo just like in JuegoMatematicas
@@ -311,26 +321,21 @@ public class GridManager : MonoBehaviour
         int result = 0;
         if (persistencyManager.dificultadActual == 2)
         {
-            // Generar operación resta O multiplicación
-            int operacion = Random.Range(0, 2); // 0 para resta, 1 para multiplicación
-            if (operacion == 0)
-            {
                 // Generar operación de resta
                 int num1 = Random.Range(2, 20);
                 int num2 = Random.Range(1, num1); // Asegurarse de que B es menor que A
                 result = num1 - num2;
                 correctResult = result;
                 OperationString = $"{num1} - {num2} = ?"; // 
-            }
-            else
-            {
+        }
+        else if (persistencyManager.dificultadActual == 3)
+        {
                 // Generar operación de multiplicación
                 int num1 = Random.Range(1, 10);
                 int num2 = Random.Range(1, 10);
                 result = num1 * num2;
                 correctResult = result;
                 OperationString = $"{num1} x {num2} = ?";
-            }
         }
         else
         {
@@ -466,7 +471,12 @@ public class GridManager : MonoBehaviour
             int number;
             do
             {
-                number = Random.Range(1, 20);
+                if (persistencyManager.dificultadActual == 2)
+                    number = Random.Range(1, 20); // For subtraction, range is 1-20
+                else if (persistencyManager.dificultadActual == 3)
+                    number = Random.Range(1, 81); // For multiplication, range is 1-81
+                else
+                    number = Random.Range(1, 20);
             }
             while (number == correctResult); // Avoid duplicate correct result
 

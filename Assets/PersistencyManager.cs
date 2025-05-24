@@ -9,6 +9,7 @@ public class PersistencyManager : MonoBehaviour
     public bool acertoTodo = false;
     public int nivelActual = 1;
     public int dificultadActual = 1; // 1: Facil, 2: Normal, 3:YA VEREMOS....
+    public int dificultadMaxima = 1; // 1: Facil, 2: Normal, 3:YA VEREMOS....
     [SerializeField] private bool resetData = false; // Para resetear los datos al iniciar el juego
     [SerializeField] private bool fullGame;
     [SerializeField] private GameObject planetasLoading;
@@ -33,9 +34,11 @@ public class PersistencyManager : MonoBehaviour
         if (fullGame)
         {
             // Desbloquear el nivel 2 al iniciar el juego
-            dificultadActual = 2;
+            dificultadActual = 3;
             nivelActual = 3;
+            dificultadMaxima = 3;
         }
+        dificultadActual = dificultadMaxima;
         starsOutput.text = $"Tienes {stars} estrellas {playerName}!!";
         if (dificultadActual == 1)
         {
@@ -44,6 +47,10 @@ public class PersistencyManager : MonoBehaviour
         else if (dificultadActual == 2)
         {
             planetasLoading.transform.GetChild(1).gameObject.SetActive(true); //VENUS
+        }
+        else if (dificultadActual == 3)
+        {
+            planetasLoading.transform.GetChild(2).gameObject.SetActive(true); //MARTE
         }
     }
 
@@ -94,6 +101,8 @@ public class PersistencyManager : MonoBehaviour
             acertoTodo = PlayerPrefs.GetInt("AcertoTodo") == 1;
         if (PlayerPrefs.HasKey("DificultadActual"))
             dificultadActual = PlayerPrefs.GetInt("DificultadActual",1);
+        if (PlayerPrefs.HasKey("DificultadMaxima"))
+            dificultadMaxima = PlayerPrefs.GetInt("DificultadMaxima",1) ;
         Debug.Log($"Loaded Data -> Stars: {stars}, PlayerName: {playerName}, SelectorDialogue: {selectorDialogue}, AcertoTodo: {acertoTodo}");
     }
 
@@ -120,9 +129,18 @@ public class PersistencyManager : MonoBehaviour
     }
     public void UnlockDifficulty2()
     {
-        PlayerPrefs.SetInt("DificultadActual", 2);
+        PlayerPrefs.SetInt("DificultadMaxima", 2); 
+        dificultadMaxima = 2;
         PlayerPrefs.Save();
     }
+
+    public void UnlockDifficulty3()
+    {
+        PlayerPrefs.SetInt("DificultadMaxima", 3); 
+        dificultadMaxima = 3;
+        PlayerPrefs.Save();
+    }
+
     public void SetNivelActual(int nivel)
     {
         nivelActual = nivel;
