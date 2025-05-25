@@ -15,6 +15,11 @@ public class Game3 : MonoBehaviour
     [SerializeField] private GameObject selectorNivel;
     [SerializeField] private NivelSelector selectorScript;
     [SerializeField] private GameObject Personaje;
+    [SerializeField] private GameObject panelExplicacion;
+    [SerializeField] private GameObject[] explicacionDialogos; // Array de los diálogos
+    [SerializeField] private GameObject botonEmpezar; // Botón que aparece al final
+    private int indiceDialogo = 0; // Índice de diálogo actual
+
 
     // Nueva configuraci�n para el movimiento curvo
     [Header("Configuraci�n de Movimiento")]
@@ -49,10 +54,57 @@ public class Game3 : MonoBehaviour
             characterInitialPosition = Personaje.transform.position;
         }
     }
-
-    private void OnEnable()
+    
+    public void EmpezarJuego()
     {
-        // Reset mistake tracking when game starts
+        // Ocultar el panel
+        if (panelExplicacion != null)
+        {
+            panelExplicacion.SetActive(false);
+        }
+
+        // Iniciar el juego normalmente
+        haFallado = false;
+        progress = 0;
+        progressText.GetComponent<TextMeshProUGUI>().text = $"{progress}/{GOAL}";
+
+        for (int i = 0; i < Options.Length; i++)
+        {
+            Options[i].GetComponentInChildren<Button>().interactable = true;
+        }
+
+        ResetCharacterPosition();
+        GenerateOperation();
+        GenerateOptions();
+    }
+
+
+   private void OnEnable()
+    {
+        if (panelExplicacion != null)
+        {
+            panelExplicacion.SetActive(true);
+            indiceDialogo = 0;
+
+            // Ocultar todos los diálogos
+            foreach (GameObject d in explicacionDialogos)
+            {
+                d.SetActive(false);
+            }
+
+            // Mostrar el primero
+            if (explicacionDialogos.Length > 0)
+            {
+                explicacionDialogos[0].SetActive(true);
+            }
+
+            // Ocultar botón de empezar al principio
+            if (botonEmpezar != null)
+            {
+                botonEmpezar.SetActive(false);
+            }
+        }
+            // Reset mistake tracking when game starts
         haFallado = false;
         progress = 0;
         progressText.GetComponent<TextMeshProUGUI>().text = $"{progress}/{GOAL}";
@@ -65,6 +117,30 @@ public class Game3 : MonoBehaviour
 
         GenerateOperation();
         GenerateOptions();
+    }
+
+    public void MostrarSiguienteDialogoExplicacion()
+    {
+        if (explicacionDialogos.Length == 0) return;
+
+        // Ocultar el actual
+        explicacionDialogos[indiceDialogo].SetActive(false);
+
+        indiceDialogo++;
+
+        if (indiceDialogo < explicacionDialogos.Length)
+        {
+            // Mostrar el siguiente diálogo
+            explicacionDialogos[indiceDialogo].SetActive(true);
+        }
+        else
+        {
+            // Terminó la secuencia, mostrar el botón de empezar
+            if (botonEmpezar != null)
+            {
+                botonEmpezar.SetActive(true);
+            }
+        }
     }
 
     private void ResetCharacterPosition()
@@ -96,11 +172,16 @@ public class Game3 : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+  // Este método es el que Unity realmente llama una vez por frame
     void Update()
     {
-
+        // Si el panel de explicación está activo y se hace clic en la pantalla
+        if (panelExplicacion != null && panelExplicacion.activeSelf && Input.GetMouseButtonDown(0))
+        {
+            MostrarSiguienteDialogoExplicacion();
+        }
     }
+
 
     void GenerateOperation()
     {
@@ -414,7 +495,7 @@ public class Game3 : MonoBehaviour
         {
             persistencyManager.AddStars(10);
             persistencyManager.SetAcertoTodo(true);
-            persistencyManager.SetDesbloqueoPendiente(false);
+            persistencyManager.SetDesbloqueoPendiente(true);
         }
         persistencyManager.UpdateStarsText();
 
@@ -449,40 +530,29 @@ public class Game3 : MonoBehaviour
         }
     }
 
-    // Corutina para procesar la victoria después de un pequeño retraso
-    private IEnumerator ProcessWinAfterDelay()
-    {
-        // Esperamos un poco para asegurar que el personaje esté en posición
-        yield return new WaitForSeconds(0.1f);
-        
-        if (persistencyManager.dificultadMaxima == 1)
-        {
-            persistencyManager.UnlockDifficulty2();
-            selectorScript.UnlockDifficulty2();
-            
-            // Esperamos a que termine esta frame
-            yield return null;
-            
-            selectorScript.ChangeDifficulty();
-            persistencyManager.SetNivelActual(1);
-            selectorScript.DesbloquearNivel(1); // Desbloqueamos el primer nivel de la nueva dificultad
+   private IEnumerator ProcessWinAfterDelay()
+{
+    yield return new WaitForSeconds(0.1f);
 
-        }
-        else if (persistencyManager.dificultadMaxima == 2)
-        {
-            persistencyManager.UnlockDifficulty3();
-            
-            // Esperamos a que termine esta frame
-            yield return null;
-            
-            selectorScript.ChangeDifficulty();
-            persistencyManager.SetNivelActual(1);
-            selectorScript.DesbloquearNivel(1); // Desbloqueamos el primer nivel de la nueva dificultad
-        }
-        
-        // Finalmente desactivamos el juego
-        transform.parent.gameObject.SetActive(false);
+    if (persistencyManager.dificultadMaxima == 1)
+    {
+        persistencyManager.UnlockDifficulty2();
+        selectorScript.UnlockDifficulty2();
+
+        // ❌ NO cambiamos nivelActual ni desbloqueamos nivel aquí
+        // El jugador lo hará pulsando la nave
     }
+    else if (persistencyManager.dificultadMaxima == 2)
+    {
+        persistencyManager.UnlockDifficulty3();
+        // ❌ No cambiamos nada más
+    }
+
+    // Finalmente desactivamos el juego
+    transform.parent.gameObject.SetActive(false);
+}
+
+
 
     //GESTION DE CAMBIO DE TEXTO AL FALLAR ROBADO DE TILESXD
     //---------------------------------------------------//

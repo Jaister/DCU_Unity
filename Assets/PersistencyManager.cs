@@ -27,10 +27,25 @@ public class PersistencyManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    public bool naveDesbloqueada = false;
+
+public void SetNaveDesbloqueada(bool valor)
+{
+    naveDesbloqueada = valor;
+    PlayerPrefs.SetInt("NaveDesbloqueada", valor ? 1 : 0);
+    PlayerPrefs.Save();
+}
+
+public void LoadNaveDesbloqueada()
+{
+    naveDesbloqueada = PlayerPrefs.GetInt("NaveDesbloqueada", 0) == 1;
+}
+
    void Start()
     {
         if (resetData) ResetData();
         LoadData(); // No resetear al arrancar
+        LoadNaveDesbloqueada();
         if (fullGame)
         {
             // Desbloquear el nivel 2 al iniciar el juego

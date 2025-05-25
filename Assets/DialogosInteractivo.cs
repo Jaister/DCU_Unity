@@ -41,10 +41,7 @@ public class DialogoInteractivo : MonoBehaviour
     [Header("Diálogo al visitar el planeta de dificultad 3")]
     public GameObject[] dialogoPlanetaDif3;
     private int indicePlanetaDif3 = 0;
-    private bool mostrandoPlanetaDif3 = false;
-
-
-
+    public bool mostrandoPlanetaDif3 = false;
 
     [SerializeField] private AudioSource BG_MUSIC;
     [SerializeField] private Image Nave;
@@ -54,78 +51,54 @@ public class DialogoInteractivo : MonoBehaviour
     [SerializeField] private PersistencyManager persistencyManager;
 
     void OnEnable()
+{
+    if (BG_MUSIC != null && !BG_MUSIC.isPlaying)
+        BG_MUSIC.Play();
+
+    foreach (GameObject d in dialogos) d.SetActive(false);
+    foreach (GameObject d in dialogosFinales) d.SetActive(false);
+    foreach (GameObject d in dialogosFallo) d.SetActive(false);
+
+    // Revisamos si acabamos un nivel y hay que mostrar el resultado
+if (persistencyManager.desbloqueoPendiente)
+{
+    persistencyManager.SetDesbloqueoPendiente(false);
+
+    if (persistencyManager.acertoTodo)
     {
-        //Reanudamos Musica
-        if (BG_MUSIC != null && !BG_MUSIC.isPlaying)
-            BG_MUSIC.Play();
-        // Ocultar todos los diálogos por si acaso
-        foreach (GameObject d in dialogos) d.SetActive(false);
-        foreach (GameObject d in dialogosFinales) d.SetActive(false);
-        foreach (GameObject d in dialogosFallo) d.SetActive(false);
-
-        // Si ACABA de jugar el nivel 1 y hay que mostrar el resultado
-        if (persistencyManager.desbloqueoPendiente && persistencyManager.dificultadActual == 1)
+        if (persistencyManager.nivelActual == 3)
         {
-            persistencyManager.SetDesbloqueoPendiente(false);
-
-            if (persistencyManager.acertoTodo)
-            {
-                // Aquí comprobamos si se completó el último nivel
-                if (persistencyManager.nivelActual == 3)
-                {
-                    MostrarDialogoTodosCompletados();
-                    return;
-                }
-
-                mostrandoFinal = true;
-                MostrarDialogoFinal();
-            }
-            else
-            {
-                mostrandoFallo = true;
-                MostrarDialogoFallo();
-            }
-
+            // Solo mostrar "has completado todo" si es el nivel 3 de la dificultad actual
+            Debug.Log("¡Has completado todos los niveles! Mostrando diálogo final.");
+            MostrarDialogoTodosCompletados();
             return;
         }
 
-
-        // Diálogo normal inicial (si nunca se ha mostrado antes)
-        
-        Debug.Log("Iniciando diálogo interactivo. SelectorDialogue: " + persistencyManager.selectorDialogue + "  " + persistencyManager.dificultadActual);
-        if (!persistencyManager.selectorDialogue && dialogos.Length > 0 && persistencyManager.dificultadActual == 1)
-        {
-            dialogos[0].SetActive(true);
-            globoTexto.SetActive(true);
-            indice = 1;
-        }
-        else
-        {
-            nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
-            Debug.Log("Desbloqueando nivel " + persistencyManager.nivelActual);
-        }
-
-        if (persistencyManager.dificultadActual == 2)
-        {
-            nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
-
-            nivelSelector.UnlockDifficulty2();
-            persistencyManager.dificultadActual = 1; // Cambia dificultad a 1 porque se cambia abajo xd
-
-            nivelSelector.ChangeDifficulty();
-        }
-        else if (persistencyManager.dificultadActual == 3)
-        {
-            nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
-
-            Nave.sprite = naveDificultad3; // Cambia la nave a la de dificultad 3
-            nivelSelector.UnlockDifficulty2();
-            persistencyManager.dificultadActual = 1; // Cambia dificultad a 1 porque se cambia abajo xd
-
-            nivelSelector.ChangeDifficulty();
-            nivelSelector.ChangeDifficulty();
-        }
+        mostrandoFinal = true;
+        MostrarDialogoFinal();
     }
+    else
+    {
+        mostrandoFallo = true;
+        MostrarDialogoFallo();
+    }
+
+    return;
+}
+
+
+    // Diálogo inicial
+    if (!persistencyManager.selectorDialogue && dialogos.Length > 0)
+    {
+        dialogos[0].SetActive(true);
+        globoTexto.SetActive(true);
+        indice = 1;
+    }
+    else
+    {
+        nivelSelector.DesbloquearNivel(persistencyManager.nivelActual);
+    }
+}
 
 
    void Update()
@@ -263,13 +236,15 @@ public class DialogoInteractivo : MonoBehaviour
     }
 }
 
-    public void MostrarDialogoTodosCompletados()
+   public void MostrarDialogoTodosCompletados()
     {
         mostrandoTodos = true;
         indiceTodos = 0;
 
+        // Ocultar otros diálogos
         foreach (GameObject d in dialogos)
             d.SetActive(false);
+
 
         globoTexto?.SetActive(true);
 
@@ -280,28 +255,29 @@ public class DialogoInteractivo : MonoBehaviour
         }
     }
 
-    void MostrarSiguienteTodosCompletados()
-{
-    if (indiceTodos < dialogosTodosCompletados.Length)
-    {
-        dialogosTodosCompletados[indiceTodos - 1].SetActive(false);
-        dialogosTodosCompletados[indiceTodos].SetActive(true);
-        indiceTodos++;
-    }
-    else
-    {
-        dialogosTodosCompletados[indiceTodos - 1].SetActive(false);
-        globoTexto?.SetActive(false);
-        mostrandoTodos = false;
 
-        Debug.Log("Fin del diálogo de todos los niveles completados.");
-        
-        // Aquí podrías mostrar la nave desbloqueada o activar algo especial
-        nivelSelector.UnlockDifficulty2();
+   void MostrarSiguienteTodosCompletados()
+    {
+        if (indiceTodos < dialogosTodosCompletados.Length)
+        {
+            dialogosTodosCompletados[indiceTodos - 1].SetActive(false);
+            dialogosTodosCompletados[indiceTodos].SetActive(true);
+            indiceTodos++;
+        }
+        else
+        {
+            dialogosTodosCompletados[indiceTodos - 1].SetActive(false);
+            globoTexto?.SetActive(false);
+            mostrandoTodos = false;
+
+            Debug.Log("Fin del diálogo de todos los niveles completados.");
+
+
+             nivelSelector.HabilitarClickShipButton();
+        }
     }
 
-    
-}
+
 
 public void MostrarDialogoPostNave()
 {
@@ -412,8 +388,4 @@ void MostrarSiguientePlanetaDif3()
         Debug.Log("Fin del diálogo de bienvenida al planeta de dificultad 3.");
     }
 }
-
-
-
-
 }

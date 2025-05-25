@@ -61,7 +61,11 @@ public class NivelSelector : MonoBehaviour
     {
         ShipButton.interactable = true;
         DIF2TEXT.SetActive(false);
+
+        // Guardar el estado de desbloqueo de la nave
+        persistencyManager.SetNaveDesbloqueada(true);
     }
+
     public void ChangeButtonImages()
     {
         if (persistencyManager.dificultadMaxima == 2)
